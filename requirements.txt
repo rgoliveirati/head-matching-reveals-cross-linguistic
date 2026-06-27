@@ -1,0 +1,13 @@
+numpy
+pandas
+matplotlib
+scipy
+transformers
+torch
+tokenizers
+sentencepiece
+conllu
+tqdm
+jupyter
+notebook
+ipykernel

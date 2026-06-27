@@ -1,0 +1,261 @@
+# run_ud_attention_eval.py
+# ============================================================
+# CLI para rodar avaliação UD×Atenção em train/dev/test
+# Com suporte a GPU e cache de modelos
+# ============================================================
+
+from __future__ import annotations
+
+import argparse
+from collections import defaultdict
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import numpy as np
+import pandas as pd
+import torch
+from transformers import AutoTokenizer, AutoModel
+
+from lang_resources import (
+    UD_TREEBANKS,
+    ensure_ud_treebank,
+    recommended_model_for,
+    MBERT,
+)
+
+from ud_attention_eval_core import (
+    parse_conllu_sentences,
+    map_words_to_token_spans,
+    mean_attention_between_spans,
+)
+
+ROMANCE_SET = {"pt","gl","es","it","fr","ro","ca","oc","rm"}
+
+# ─── Cache global de modelos (evita recarregar a cada split) ───
+_MODEL_CACHE: Dict[str, Tuple] = {}
+
+def lang_group(lang: str) -> str:
+    return "romanico" if (lang or "").lower() in ROMANCE_SET else "controle"
+
+def iter_models_for_lang(lang: str, model_mode: str, manual_model: Optional[str]) -> List[Tuple[str, str]]:
+    if model_mode == "mono_por_lingua":
+        return [(recommended_model_for(lang), "mono")]
+    if model_mode == "mbert_unico":
+        return [(MBERT, "mbert")]
+    if model_mode == "manual_unico":
+        return [((manual_model or MBERT), "manual")]
+    return [(recommended_model_for(lang), "mono"), (MBERT, "mbert")]
+
+@torch.no_grad()
+def load_model_and_tokenizer(model_id: str):
+    """Carrega modelo com cache. Evita recarregar o mesmo modelo para cada split."""
+    if model_id in _MODEL_CACHE:
+        return _MODEL_CACHE[model_id]
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    tok = AutoTokenizer.from_pretrained(model_id, use_fast=True)
+    mdl = AutoModel.from_pretrained(
+        model_id,
+        output_attentions=True,
+        attn_implementation="eager",   # evita fallback SDPA (warning + lentidão)
+    )
+    mdl.eval()
+    mdl.to(device)
+
+    _MODEL_CACHE[model_id] = (tok, mdl, device)
+    print(f"  [MODEL] {model_id} carregado em {device}")
+    return tok, mdl, device
+
+def resolve_split_path(ud_info: Dict[str, object], split: str):
+    p = ud_info.get(split)
+    if p is None:
+        if split == "dev":
+            return Path(ud_info["train"]), "train_fallback_dev"
+        raise FileNotFoundError(f"Split '{split}' não existe para {ud_info.get('repo')}.")
+    return Path(p), split
+
+def run_one(lang: str, split: str, model_id: str, model_family: str,
+            max_sents: int, rel_filter: Optional[List[str]], max_len: int,
+            export_long: bool, long_budget: int):
+    ud = ensure_ud_treebank(lang)
+    treebank = ud["repo"]
+    split_path, split_tag = resolve_split_path(ud, split)
+
+    sents = parse_conllu_sentences(str(split_path), max_sents=max_sents)
+    if not sents:
+        return None, [], long_budget
+
+    tok, mdl, device = load_model_and_tokenizer(model_id)
+
+    acc_sum = defaultdict(float)
+    acc_cnt = defaultdict(int)
+    acc_sumsq = defaultdict(float)
+    long_rows = []
+
+    for sent in sents:
+        try:
+            enc, word2tok = map_words_to_token_spans(tok, sent.text, sent.spans, max_len=max_len)
+
+            input_ids = enc["input_ids"].to(device)
+            attention_mask = enc["attention_mask"].to(device) if "attention_mask" in enc else None
+            token_type_ids = enc["token_type_ids"].to(device) if "token_type_ids" in enc else None
+
+            out = mdl(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                token_type_ids=token_type_ids,
+            )
+            attentions = out.attentions
+            L = len(attentions)
+            H = attentions[0].shape[1]
+
+            for t in sent.tokens:
+                if t.head == 0:
+                    continue
+                if rel_filter is not None and t.deprel not in rel_filter:
+                    continue
+                if t.head not in word2tok or t.id not in word2tok:
+                    continue
+
+                head_span = word2tok[t.head]
+                dep_span = word2tok[t.id]
+
+                for layer in range(L):
+                    att = attentions[layer][0].detach().cpu().numpy()
+                    for head in range(H):
+                        mat = att[head]
+                        a_hd = mean_attention_between_spans(mat, head_span, dep_span)
+                        a_dh = mean_attention_between_spans(mat, dep_span, head_span)
+
+                        if not np.isnan(a_hd):
+                            key = (lang, lang_group(lang), model_id, model_family, treebank, split_tag,
+                                   t.deprel, layer + 1, head + 1, "head_to_dep")
+                            acc_sum[key] += a_hd
+                            acc_sumsq[key] += a_hd * a_hd
+                            acc_cnt[key] += 1
+                            if export_long and long_budget > 0:
+                                long_rows.append({
+                                    "lang": lang, "lang_group": lang_group(lang),
+                                    "model_id": model_id, "model_family": model_family,
+                                    "treebank": treebank, "split": split_tag,
+                                    "deprel": t.deprel, "layer": layer + 1, "head": head + 1,
+                                    "direction": "head_to_dep", "attention": float(a_hd),
+                                })
+                                long_budget -= 1
+
+                        if not np.isnan(a_dh):
+                            key = (lang, lang_group(lang), model_id, model_family, treebank, split_tag,
+                                   t.deprel, layer + 1, head + 1, "dep_to_head")
+                            acc_sum[key] += a_dh
+                            acc_sumsq[key] += a_dh * a_dh
+                            acc_cnt[key] += 1
+                            if export_long and long_budget > 0:
+                                long_rows.append({
+                                    "lang": lang, "lang_group": lang_group(lang),
+                                    "model_id": model_id, "model_family": model_family,
+                                    "treebank": treebank, "split": split_tag,
+                                    "deprel": t.deprel, "layer": layer + 1, "head": head + 1,
+                                    "direction": "dep_to_head", "attention": float(a_dh),
+                                })
+                                long_budget -= 1
+        except Exception:
+            continue
+
+    rows = []
+    for key, cnt in acc_cnt.items():
+        s = acc_sum[key]
+        ss = acc_sumsq[key]
+        mean = s / cnt if cnt else np.nan
+        var = (ss / cnt - mean * mean) if cnt else np.nan
+        std = float(np.sqrt(max(var, 0.0))) if cnt else np.nan
+
+        (lang, lg, model_id, mf, treebank, split_tag, deprel, layer, head, direction) = key
+        rows.append({
+            "lang": lang, "lang_group": lg,
+            "model_id": model_id, "model_family": mf,
+            "treebank": treebank, "split": split_tag,
+            "deprel": deprel, "layer": layer, "head": head,
+            "direction": direction,
+            "mean_attention": mean, "std_attention": std, "n_arcs": int(cnt),
+        })
+
+    return pd.DataFrame(rows), long_rows, long_budget
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--langs", type=str, default="pt,gl,es,it,fr,ro")
+    ap.add_argument("--include_control", action="store_true")
+    ap.add_argument("--control_langs", type=str, default="de")
+    ap.add_argument("--splits", type=str, default="train,dev,test")
+    ap.add_argument("--model_mode", type=str, default="mono_vs_mbert",
+                    choices=["mono_por_lingua","mbert_unico","mono_vs_mbert","manual_unico"])
+    ap.add_argument("--manual_model", type=str, default="")
+    ap.add_argument("--max_sents", type=int, default=1000)
+    ap.add_argument("--rel_filter", type=str, default="nsubj,obj,amod,case")
+    ap.add_argument("--max_len", type=int, default=512)
+    ap.add_argument("--out_csv", type=str, default="romanic_attention_generalization_all_splits.csv")
+    ap.add_argument("--export_long", action="store_true")
+    ap.add_argument("--out_long", type=str, default="romanic_attention_generalization_long_sample.csv")
+    ap.add_argument("--max_long_rows", type=int, default=200000)
+    args = ap.parse_args()
+
+    # ─── Info do dispositivo ───
+    if torch.cuda.is_available():
+        print(f"[GPU] {torch.cuda.get_device_name(0)} "
+              f"({torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB)")
+    else:
+        print("[CPU] Nenhuma GPU detectada. Execução será mais lenta.")
+
+    langs_all = set(UD_TREEBANKS.keys())
+    langs = [x.strip() for x in args.langs.split(",") if x.strip()]
+    langs = [l for l in langs if l in langs_all]
+    if args.include_control:
+        for cl in [x.strip() for x in args.control_langs.split(",") if x.strip()]:
+            if cl in langs_all and cl not in langs:
+                langs.append(cl)
+
+    if not langs:
+        raise SystemExit("Nenhuma língua válida selecionada (verifique UD_TREEBANKS).")
+
+    splits = [x.strip() for x in args.splits.split(",") if x.strip()]
+    rel_filter = [r.strip() for r in args.rel_filter.split(",") if r.strip()] if (args.rel_filter or "").strip() else None
+    manual_model = (args.manual_model or "").strip() or None
+
+    all_rows = []
+    long_rows = []
+    long_budget = int(args.max_long_rows)
+
+    for lang in langs:
+        for split in splits:
+            for model_id, model_family in iter_models_for_lang(lang, args.model_mode, manual_model):
+                print(f"[RUN] lang={lang} split={split} family={model_family} model={model_id}")
+                df_part, long_part, long_budget = run_one(
+                    lang=lang, split=split, model_id=model_id, model_family=model_family,
+                    max_sents=int(args.max_sents), rel_filter=rel_filter, max_len=int(args.max_len),
+                    export_long=bool(args.export_long), long_budget=int(long_budget),
+                )
+                if df_part is not None and not df_part.empty:
+                    all_rows.append(df_part)
+                if args.export_long and long_part:
+                    long_rows.extend(long_part)
+
+    if not all_rows:
+        raise SystemExit("Resultado vazio. Verifique filtros/max_sents.")
+
+    out_csv = Path(args.out_csv)
+    df_out = pd.concat(all_rows, ignore_index=True)
+    df_out.to_csv(out_csv, index=False, encoding="utf-8")
+    print("[OK] CSV agregado:", out_csv.resolve())
+
+    if args.export_long:
+        out_long = Path(args.out_long)
+        pd.DataFrame(long_rows).to_csv(out_long, index=False, encoding="utf-8")
+        print("[OK] CSV long:", out_long.resolve())
+
+    # ─── Limpar cache de modelos ───
+    _MODEL_CACHE.clear()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
+if __name__ == "__main__":
+    main()
