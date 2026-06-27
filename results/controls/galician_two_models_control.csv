@@ -1,0 +1,5 @@
+control,lang_a,lang_b,deprel,weight_min_n_arcs,rho_micro_index,rho_macro,rho_micro_matched_joint,rho_micro_matched_loo
+gl_marcosgg_vs_gl_fpuentes,gl_marcosgg,gl_fpuentes,nsubj,446.0,0.140467,0.699301,0.763584,0.654783
+gl_marcosgg_vs_gl_fpuentes,gl_marcosgg,gl_fpuentes,obj,465.0,0.160088,0.748252,0.850205,0.752331
+gl_marcosgg_vs_gl_fpuentes,gl_marcosgg,gl_fpuentes,case,1364.0,-0.025729,0.48951,0.698995,0.442902
+gl_marcosgg_vs_gl_fpuentes,gl_marcosgg,gl_fpuentes,amod,572.0,0.010703,0.769231,0.816305,0.653119

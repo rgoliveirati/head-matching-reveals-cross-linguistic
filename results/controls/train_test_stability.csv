@@ -1,0 +1,17 @@
+deprel,metric,train,test,delta,abs_delta
+nsubj,rho_micro_index,0.153175,0.165929,0.012754,0.012754
+nsubj,rho_macro_weighted,0.396538,0.445008,0.048469,0.048469
+nsubj,rho_micro_matched_joint,0.659828,0.68297,0.023142,0.023142
+nsubj,rho_micro_matched_loo,0.487898,0.491814,0.003916,0.003916
+obj,rho_micro_index,0.130744,0.135576,0.004833,0.004833
+obj,rho_macro_weighted,0.364173,0.398181,0.034008,0.034008
+obj,rho_micro_matched_joint,0.699029,0.729941,0.030912,0.030912
+obj,rho_micro_matched_loo,0.589301,0.578957,-0.010345,0.010345
+case,rho_micro_index,0.055074,0.057064,0.00199,0.00199
+case,rho_macro_weighted,0.158275,0.174216,0.015941,0.015941
+case,rho_micro_matched_joint,0.56417,0.566206,0.002036,0.002036
+case,rho_micro_matched_loo,0.33387,0.322706,-0.011165,0.011165
+amod,rho_micro_index,0.08673,0.089741,0.003011,0.003011
+amod,rho_macro_weighted,0.239974,0.322637,0.082663,0.082663
+amod,rho_micro_matched_joint,0.680431,0.676093,-0.004338,0.004338
+amod,rho_micro_matched_loo,0.520794,0.484739,-0.036055,0.036055

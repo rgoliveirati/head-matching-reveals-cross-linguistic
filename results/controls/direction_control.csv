@@ -1,0 +1,17 @@
+deprel,metric,head_to_dep,dep_to_head,delta,abs_delta
+nsubj,rho_micro_index,0.165929,0.141708,-0.024221,0.024221
+nsubj,rho_macro_weighted,0.445008,0.367509,-0.077499,0.077499
+nsubj,rho_micro_matched_joint,0.68297,0.658378,-0.024592,0.024592
+nsubj,rho_micro_matched_loo,0.491814,0.527208,0.035394,0.035394
+obj,rho_micro_index,0.135576,0.110667,-0.024909,0.024909
+obj,rho_macro_weighted,0.398181,0.358367,-0.039814,0.039814
+obj,rho_micro_matched_joint,0.729941,0.703604,-0.026337,0.026337
+obj,rho_micro_matched_loo,0.578957,0.571671,-0.007286,0.007286
+case,rho_micro_index,0.057064,0.110745,0.053681,0.053681
+case,rho_macro_weighted,0.174216,0.31963,0.145414,0.145414
+case,rho_micro_matched_joint,0.566206,0.649426,0.08322,0.08322
+case,rho_micro_matched_loo,0.322706,0.467752,0.145046,0.145046
+amod,rho_micro_index,0.089741,0.074503,-0.015238,0.015238
+amod,rho_macro_weighted,0.322637,0.20153,-0.121107,0.121107
+amod,rho_micro_matched_joint,0.676093,0.70425,0.028157,0.028157
+amod,rho_micro_matched_loo,0.484739,0.527028,0.042289,0.042289
