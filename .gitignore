@@ -56,6 +56,8 @@ results/*
 
 # Docs generated artifacts
 docs/*
+docs/MANUSCRIPT_NUMERIC_CHECK.md
+MANUSCRIPT_NUMERIC_CHECK.md
 !docs/.gitkeep
 
 # Temporary files
