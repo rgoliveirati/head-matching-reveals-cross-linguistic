@@ -64,3 +64,5 @@ MANUSCRIPT_NUMERIC_CHECK.md
 *.tmp
 *.bak
 *.swp
+revision_outputs/ud_arc_distance_arcs.csv
+revision_outputs/distance_attention/
