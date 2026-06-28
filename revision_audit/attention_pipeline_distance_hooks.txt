@@ -1,0 +1,62 @@
+src/run_ud_attention_eval.py:1:# run_ud_attention_eval.py
+src/run_ud_attention_eval.py:17:from transformers import AutoTokenizer, AutoModel
+src/run_ud_attention_eval.py:26:from ud_attention_eval_core import (
+src/run_ud_attention_eval.py:27:    parse_conllu_sentences,
+src/run_ud_attention_eval.py:28:    map_words_to_token_spans,
+src/run_ud_attention_eval.py:29:    mean_attention_between_spans,
+src/run_ud_attention_eval.py:50:def load_model_and_tokenizer(model_id: str):
+src/run_ud_attention_eval.py:56:    tok = AutoTokenizer.from_pretrained(model_id, use_fast=True)
+src/run_ud_attention_eval.py:59:        output_attentions=True,
+src/run_ud_attention_eval.py:84:    sents = parse_conllu_sentences(str(split_path), max_sents=max_sents)
+src/run_ud_attention_eval.py:88:    tok, mdl, device = load_model_and_tokenizer(model_id)
+src/run_ud_attention_eval.py:97:            enc, word2tok = map_words_to_token_spans(tok, sent.text, sent.spans, max_len=max_len)
+src/run_ud_attention_eval.py:100:            attention_mask = enc["attention_mask"].to(device) if "attention_mask" in enc else None
+src/run_ud_attention_eval.py:101:            token_type_ids = enc["token_type_ids"].to(device) if "token_type_ids" in enc else None
+src/run_ud_attention_eval.py:105:                attention_mask=attention_mask,
+src/run_ud_attention_eval.py:106:                token_type_ids=token_type_ids,
+src/run_ud_attention_eval.py:108:            attentions = out.attentions
+src/run_ud_attention_eval.py:109:            L = len(attentions)
+src/run_ud_attention_eval.py:110:            H = attentions[0].shape[1]
+src/run_ud_attention_eval.py:112:            for t in sent.tokens:
+src/run_ud_attention_eval.py:113:                if t.head == 0:
+src/run_ud_attention_eval.py:115:                if rel_filter is not None and t.deprel not in rel_filter:
+src/run_ud_attention_eval.py:117:                if t.head not in word2tok or t.id not in word2tok:
+src/run_ud_attention_eval.py:120:                head_span = word2tok[t.head]
+src/run_ud_attention_eval.py:124:                    att = attentions[layer][0].detach().cpu().numpy()
+src/run_ud_attention_eval.py:125:                    for head in range(H):
+src/run_ud_attention_eval.py:126:                        mat = att[head]
+src/run_ud_attention_eval.py:127:                        a_hd = mean_attention_between_spans(mat, head_span, dep_span)
+src/run_ud_attention_eval.py:128:                        a_dh = mean_attention_between_spans(mat, dep_span, head_span)
+src/run_ud_attention_eval.py:132:                                   t.deprel, layer + 1, head + 1, "head_to_dep")
+src/run_ud_attention_eval.py:141:                                    "deprel": t.deprel, "layer": layer + 1, "head": head + 1,
+src/run_ud_attention_eval.py:142:                                    "direction": "head_to_dep", "attention": float(a_hd),
+src/run_ud_attention_eval.py:148:                                   t.deprel, layer + 1, head + 1, "dep_to_head")
+src/run_ud_attention_eval.py:157:                                    "deprel": t.deprel, "layer": layer + 1, "head": head + 1,
+src/run_ud_attention_eval.py:158:                                    "direction": "dep_to_head", "attention": float(a_dh),
+src/run_ud_attention_eval.py:172:        (lang, lg, model_id, mf, treebank, split_tag, deprel, layer, head, direction) = key
+src/run_ud_attention_eval.py:177:            "deprel": deprel, "layer": layer, "head": head,
+src/run_ud_attention_eval.py:179:            "mean_attention": mean, "std_attention": std, "n_arcs": int(cnt),
+src/run_ud_attention_eval.py:196:    ap.add_argument("--out_csv", type=str, default="romanic_attention_generalization_all_splits.csv")
+src/run_ud_attention_eval.py:198:    ap.add_argument("--out_long", type=str, default="romanic_attention_generalization_long_sample.csv")
+src/ud_attention_eval_core.py:1:# ud_attention_eval_core.py
+src/ud_attention_eval_core.py:3:# Núcleo de avaliação: UD (.conllu) × Atenção (Transformers HF)
+src/ud_attention_eval_core.py:12:class UDToken:
+src/ud_attention_eval_core.py:15:    head: int
+src/ud_attention_eval_core.py:16:    deprel: str
+src/ud_attention_eval_core.py:22:    tokens: List[UDToken]
+src/ud_attention_eval_core.py:27:def parse_conllu_sentences(path: str, max_sents: Optional[int] = None) -> List[UDSentence]:
+src/ud_attention_eval_core.py:32:        ud_tokens: List[UDToken] = []
+src/ud_attention_eval_core.py:44:            head = cols[6]
+src/ud_attention_eval_core.py:45:            deprel = cols[7]
+src/ud_attention_eval_core.py:46:            if not head.isdigit():
+src/ud_attention_eval_core.py:48:            ud_tokens.append(UDToken(id=wid, form=form, head=int(head), deprel=deprel))
+src/ud_attention_eval_core.py:50:        if not ud_tokens:
+src/ud_attention_eval_core.py:56:        for t in ud_tokens:
+src/ud_attention_eval_core.py:67:        sents.append(UDSentence(text=text, spans=spans, tokens=ud_tokens))
+src/ud_attention_eval_core.py:85:def map_words_to_token_spans(tokenizer, text: str, word_spans: Dict[int, Tuple[int, int]], max_len: int):
+src/ud_attention_eval_core.py:86:    enc = tokenizer(
+src/ud_attention_eval_core.py:89:        add_special_tokens=True,
+src/ud_attention_eval_core.py:90:        return_offsets_mapping=True,
+src/ud_attention_eval_core.py:94:    offsets = enc["offset_mapping"][0].tolist()
+src/ud_attention_eval_core.py:99:        for ti, (ts, te) in enumerate(offsets):
+src/ud_attention_eval_core.py:108:def mean_attention_between_spans(attn: np.ndarray, span_a: Tuple[int, int], span_b: Tuple[int, int]) -> float:

@@ -1,0 +1,16 @@
+./data/attention_all_splits.csv
+./data/.ipynb_checkpoints/attention_all_splits-checkpoint.csv
+./data/outputs/gl_fpuentes.csv
+./data/outputs/gl_marcosgg.csv
+./data/outputs/pt_base.csv
+./data/outputs/pt_large.csv
+./results/controls/controls_manifest.csv
+./results/controls/direction_control.csv
+./results/controls/galician_two_models_control.csv
+./results/controls/main_head_matching_summary.csv
+./results/controls/main_pairwise_head_matching.csv
+./results/controls/mono_vs_mbert_control.csv
+./results/controls/romance_vs_german_control.csv
+./results/controls/train_test_stability.csv
+./results/controls/without_french_control.csv
+./results/controls/without_pt_gl_pair.csv

@@ -1,0 +1,335 @@
+./src/compute_head_matching_metrics.py:4:compute_head_matching_metrics.py
+./src/compute_head_matching_metrics.py:7:Permutation-aware head matching for cross-linguistic syntactic-attention profiles.
+./src/compute_head_matching_metrics.py:10:absolute-index micro correlation vs. layer-level macro correlation vs. head-matched
+./src/compute_head_matching_metrics.py:11:micro correlation, including the joint and leave-one-out (LOO) variants.
+./src/compute_head_matching_metrics.py:22:1. head_matching_metrics_<split>.csv
+./src/compute_head_matching_metrics.py:23:   One row per dependency relation, with weighted aggregate micro correlations:
+./src/compute_head_matching_metrics.py:24:       rho_micro_index
+./src/compute_head_matching_metrics.py:25:       rho_macro_mean
+./src/compute_head_matching_metrics.py:26:       rho_macro_weighted
+./src/compute_head_matching_metrics.py:27:       rho_micro_matched_joint
+./src/compute_head_matching_metrics.py:28:       rho_micro_matched_loo
+./src/compute_head_matching_metrics.py:30:2. pairwise_head_matching_<split>.csv
+./src/compute_head_matching_metrics.py:33:3. head_matching_permutations_<split>.csv
+./src/compute_head_matching_metrics.py:34:   The head assignments selected by the Hungarian algorithm.
+./src/compute_head_matching_metrics.py:39:matrix M[layer, head]. For each pair of languages, heads are matched independently
+./src/compute_head_matching_metrics.py:44:Two matched variants are reported:
+./src/compute_head_matching_metrics.py:45:    matched_joint: uses all relations to estimate the matching;
+./src/compute_head_matching_metrics.py:46:    matched_loo:   when evaluating relation d, estimates the matching using all
+./src/compute_head_matching_metrics.py:49:The micro aggregate uses the same weighted scheme described in the article:
+./src/compute_head_matching_metrics.py:53:match older scripts that summed repeated cells.
+./src/compute_head_matching_metrics.py:66:from scipy.optimize import linear_sum_assignment
+./src/compute_head_matching_metrics.py:80:def spearman_corr(a: np.ndarray, b: np.ndarray) -> float:
+./src/compute_head_matching_metrics.py:81:    """Spearman correlation implemented through average ranks and Pearson."""
+./src/compute_head_matching_metrics.py:159:        print("[WARN] LOO matching needs at least two relations; matched_loo will be NaN.")
+./src/compute_head_matching_metrics.py:206:def layer_permutations(TA: np.ndarray, TB: np.ndarray, keep_dims: Sequence[int]) -> List[np.ndarray]:
+./src/compute_head_matching_metrics.py:207:    """For each layer, match heads in B to heads in A using Euclidean signature distance.
+./src/compute_head_matching_metrics.py:218:        row_ind, col_ind = linear_sum_assignment(C)
+./src/compute_head_matching_metrics.py:219:        # linear_sum_assignment returns sorted row indices for square matrices, but make explicit.
+./src/compute_head_matching_metrics.py:226:def matched_matrix(TB: np.ndarray, dep_index: int, perms: Sequence[np.ndarray]) -> np.ndarray:
+./src/compute_head_matching_metrics.py:239:        joint_perms = layer_permutations(TA, TB, list(range(len(cfg.deps))))
+./src/compute_head_matching_metrics.py:244:    # Store joint permutations once per pair.
+./src/compute_head_matching_metrics.py:251:                    "mode": "matched_joint",
+./src/compute_head_matching_metrics.py:261:        rho_index = spearman_corr(A.flatten(), B_index.flatten())
+./src/compute_head_matching_metrics.py:263:        B_joint = matched_matrix(TB, dep_index, joint_perms) if joint_perms is not None else np.full_like(A, np.nan)
+./src/compute_head_matching_metrics.py:264:        rho_joint = spearman_corr(A.flatten(), B_joint.flatten())
+./src/compute_head_matching_metrics.py:268:            loo_perms = layer_permutations(TA, TB, keep)
+./src/compute_head_matching_metrics.py:269:            B_loo = matched_matrix(TB, dep_index, loo_perms)
+./src/compute_head_matching_metrics.py:270:            rho_loo = spearman_corr(A.flatten(), B_loo.flatten())
+./src/compute_head_matching_metrics.py:271:            for layer, perm in enumerate(loo_perms, start=1):
+./src/compute_head_matching_metrics.py:276:                        "mode": "matched_loo",
+./src/compute_head_matching_metrics.py:283:            rho_loo = float("nan")
+./src/compute_head_matching_metrics.py:285:        macro_a = layer_vector_for(df, cfg, lang_a, dep)
+./src/compute_head_matching_metrics.py:286:        macro_b = layer_vector_for(df, cfg, lang_b, dep)
+./src/compute_head_matching_metrics.py:287:        rho_macro = spearman_corr(macro_a, macro_b)
+./src/compute_head_matching_metrics.py:295:            "rho_micro_index": rho_index,
+./src/compute_head_matching_metrics.py:296:            "rho_macro": rho_macro,
+./src/compute_head_matching_metrics.py:297:            "rho_micro_matched_joint": rho_joint,
+./src/compute_head_matching_metrics.py:298:            "rho_micro_matched_loo": rho_loo,
+./src/compute_head_matching_metrics.py:323:            "rho_micro_index": weighted_mean(sub["rho_micro_index"], weights),
+./src/compute_head_matching_metrics.py:324:            "rho_macro_mean": float(np.nanmean(sub["rho_macro"].to_numpy(dtype=float))),
+./src/compute_head_matching_metrics.py:325:            "rho_macro_weighted": weighted_mean(sub["rho_macro"], weights),
+./src/compute_head_matching_metrics.py:326:            "rho_micro_matched_joint": weighted_mean(sub["rho_micro_matched_joint"], weights),
+./src/compute_head_matching_metrics.py:327:            "rho_micro_matched_loo": weighted_mean(sub["rho_micro_matched_loo"], weights),
+./src/compute_head_matching_metrics.py:341:    parser = argparse.ArgumentParser(description="Compute permutation-aware head-matching metrics.")
+./src/compute_head_matching_metrics.py:355:    parser.add_argument("--out_permutations", default="", help="Optional explicit permutations CSV path")
+./src/compute_head_matching_metrics.py:382:    out_summary = Path(args.out_csv) if args.out_csv else out_dir / f"head_matching_metrics_{tag}.csv"
+./src/compute_head_matching_metrics.py:383:    out_pairs = Path(args.out_pairs) if args.out_pairs else out_dir / f"pairwise_head_matching_{tag}.csv"
+./src/compute_head_matching_metrics.py:384:    out_perms = Path(args.out_permutations) if args.out_permutations else out_dir / f"head_matching_permutations_{tag}.csv"
+./src/compute_head_matching_metrics.py:397:    print("[OK] permutations:", out_perms.resolve())
+./src/build_generalization_report.py:11:def macro_micro_reading(rho_layer: float, rho_head: float) -> str:
+./src/build_generalization_report.py:15:        return "macro_e_micro"
+./src/build_generalization_report.py:17:        return "macro_por_camada"
+./src/build_generalization_report.py:19:        return "micro_sem_macro"
+./src/build_generalization_report.py:33:    for c in ["stability_score_0_1","spearman_mean_layer","spearman_wmean","entropy_norm_mean","entropy_norm_std"]:
+./src/build_generalization_report.py:44:    metrics["macro_micro_reading"] = [
+./src/build_generalization_report.py:45:        macro_micro_reading(a, b) for a, b in zip(metrics["spearman_mean_layer"], metrics["spearman_wmean"])
+./src/build_generalization_report.py:64:            "deprel","langs_used","spearman_mean_layer","spearman_wmean",
+./src/build_generalization_report.py:65:            "entropy_norm_mean","entropy_norm_std","stability_score_0_1","generalization_type","macro_micro_reading"
+./src/compute_control_analyses.py:9:This script complements compute_head_matching_metrics.py. It is designed to
+./src/compute_control_analyses.py:41:All controls use the same weighted aggregation as the main head-matching analysis.
+./src/compute_control_analyses.py:46:The script reports both index-based and permutation-aware matched correlations.
+./src/compute_control_analyses.py:47:Matched LOO is the preferred non-circular estimate.
+./src/compute_control_analyses.py:59:from scipy.optimize import linear_sum_assignment
+./src/compute_control_analyses.py:63:    "rho_micro_index",
+./src/compute_control_analyses.py:64:    "rho_macro_weighted",
+./src/compute_control_analyses.py:65:    "rho_micro_matched_joint",
+./src/compute_control_analyses.py:66:    "rho_micro_matched_loo",
+./src/compute_control_analyses.py:79:def spearman_corr(a: np.ndarray, b: np.ndarray) -> float:
+./src/compute_control_analyses.py:178:def layer_permutations(TA: np.ndarray, TB: np.ndarray, keep_dims: Sequence[int]) -> List[np.ndarray]:
+./src/compute_control_analyses.py:186:        row_ind, col_ind = linear_sum_assignment(C)
+./src/compute_control_analyses.py:193:def apply_permutation(TB: np.ndarray, dep_index: int, perms: Sequence[np.ndarray]) -> np.ndarray:
+./src/compute_control_analyses.py:219:        joint_perms = layer_permutations(TA, TB, list(range(len(deps)))) if deps else []
+./src/compute_control_analyses.py:223:            rho_index = spearman_corr(A.flatten(), B.flatten())
+./src/compute_control_analyses.py:224:            macro_a = A.mean(axis=1)
+./src/compute_control_analyses.py:225:            macro_b = B.mean(axis=1)
+./src/compute_control_analyses.py:226:            rho_macro = spearman_corr(macro_a, macro_b)
+./src/compute_control_analyses.py:227:            B_joint = apply_permutation(TB, dep_index, joint_perms)
+./src/compute_control_analyses.py:228:            rho_joint = spearman_corr(A.flatten(), B_joint.flatten())
+./src/compute_control_analyses.py:231:                loo_perms = layer_permutations(TA, TB, keep)
+./src/compute_control_analyses.py:232:                B_loo = apply_permutation(TB, dep_index, loo_perms)
+./src/compute_control_analyses.py:233:                rho_loo = spearman_corr(A.flatten(), B_loo.flatten())
+./src/compute_control_analyses.py:235:                rho_loo = float("nan")
+./src/compute_control_analyses.py:241:                "rho_micro_index": rho_index,
+./src/compute_control_analyses.py:242:                "rho_macro": rho_macro,
+./src/compute_control_analyses.py:243:                "rho_micro_matched_joint": rho_joint,
+./src/compute_control_analyses.py:244:                "rho_micro_matched_loo": rho_loo,
+./src/compute_control_analyses.py:260:            "rho_micro_index": weighted_mean(sub["rho_micro_index"], w),
+./src/compute_control_analyses.py:261:            "rho_macro_mean": float(np.nanmean(sub["rho_macro"].to_numpy(dtype=float))),
+./src/compute_control_analyses.py:262:            "rho_macro_weighted": weighted_mean(sub["rho_macro"], w),
+./src/compute_control_analyses.py:263:            "rho_micro_matched_joint": weighted_mean(sub["rho_micro_matched_joint"], w),
+./src/compute_control_analyses.py:264:            "rho_micro_matched_loo": weighted_mean(sub["rho_micro_matched_loo"], w),
+./src/compute_control_analyses.py:317:        for m in ["rho_micro_index", "rho_macro", "rho_micro_matched_joint", "rho_micro_matched_loo"]:
+./src/compute_control_analyses.py:402:    save_csv(main_summary, out_dir / "main_head_matching_summary.csv", args.round, manifest, "Main mono/test/head_to_dep summary used as baseline for controls.")
+./src/compute_control_analyses.py:403:    save_csv(main_pairs, out_dir / "main_pairwise_head_matching.csv", args.round, manifest, "Main pairwise correlations used for pair-level controls.")
+./src/compute_generalization_metrics.py:17:def spearman_corr(a, b):
+./src/compute_generalization_metrics.py:32:def classify_macro_micro(rho_layer, rho_head, thr_layer=0.30, thr_head=0.20):
+./src/compute_generalization_metrics.py:36:        return "macro_por_camada"
+./src/compute_generalization_metrics.py:38:        return "macro_e_micro"
+./src/compute_generalization_metrics.py:40:        return "micro_sem_macro (suspeito)"
+./src/compute_generalization_metrics.py:92:            cs = spearman_corr(vectors[(l1, dep)], vectors[(l2, dep)])
+./src/compute_generalization_metrics.py:98:                          "spearman_wmean": (np.nansum(cors_s_w) / w_sum) if w_sum > 0 else np.nan})
+./src/compute_generalization_metrics.py:99:    full_corr_df = pd.DataFrame(rows_full, columns=["deprel","langs_used","spearman_wmean"])
+./src/compute_generalization_metrics.py:116:            cors_s.append(spearman_corr(layer_vectors[(l1, dep)], layer_vectors[(l2, dep)]))
+./src/compute_generalization_metrics.py:117:        rows_layer.append({"deprel": dep, "langs_used": len(available), "spearman_mean_layer": np.nanmean(cors_s)})
+./src/compute_generalization_metrics.py:118:    layer_corr_df = pd.DataFrame(rows_layer, columns=["deprel","langs_used","spearman_mean_layer"])
+./src/compute_generalization_metrics.py:120:    # Robustez: se não há pares suficientes em algum dos componentes (micro/macro),
+./src/compute_generalization_metrics.py:125:            "deprel","langs_used","spearman_wmean","spearman_mean_layer",
+./src/compute_generalization_metrics.py:169:            "deprel","langs_used","spearman_wmean","spearman_mean_layer",
+./src/compute_generalization_metrics.py:176:        corr_full = float(r["spearman_wmean"])
+./src/compute_generalization_metrics.py:177:        corr_layer = float(r["spearman_mean_layer"])
+./src/compute_generalization_metrics.py:191:            "spearman_wmean": corr_full,
+./src/compute_generalization_metrics.py:192:            "spearman_mean_layer": corr_layer,
+./src/compute_generalization_metrics.py:196:            "generalization_type": classify_macro_micro(corr_layer, corr_full),
+./notebooks/notebook_respostas_revisores.ipynb:15:    "| 1 | **Invariância de permutação de cabeças** (2 revisores) | Recalcula o ρ_micro casando cabeças entre modelos (Hungarian) em vez de comparar por índice absoluto |\n",
+./notebooks/notebook_respostas_revisores.ipynb:61:    "from scipy.optimize import linear_sum_assignment\n",
+./notebooks/notebook_respostas_revisores.ipynb:77:    "        pt=rng.random((L,H)); perm=rng.permutation(H)\n",
+./notebooks/notebook_respostas_revisores.ipynb:117:    "### Funções auxiliares (vetor 144, matriz 12×12, Spearman, pesos)"
+./notebooks/notebook_respostas_revisores.ipynb:127:    "def spearman(a, b):\n",
+./notebooks/notebook_respostas_revisores.ipynb:146:    "    '''[L,H,n_dep] assinatura de cada cabeca atraves das relacoes (para o matching).'''\n",
+./notebooks/notebook_respostas_revisores.ipynb:157:    "## 1. Head matching (responde à invariância de permutação) — **prioridade máxima**\n",
+./notebooks/notebook_respostas_revisores.ipynb:159:    "> *\"Comparing heads by absolute index across independently trained models ignores permutation\n",
+./notebooks/notebook_respostas_revisores.ipynb:160:    "> invariance\" / \"A head-matching step per layer would be a fairer test of micro-level generalization\n",
+./notebooks/notebook_respostas_revisores.ipynb:164:    "independente. O ρ_micro atual pode estar artificialmente baixo só por isso. Aqui recomputamos o\n",
+./notebooks/notebook_respostas_revisores.ipynb:165:    "ρ_micro **casando as cabeças** dentro de cada camada com o algoritmo húngaro\n",
+./notebooks/notebook_respostas_revisores.ipynb:166:    "(`scipy.optimize.linear_sum_assignment`), em três variantes:\n",
+./notebooks/notebook_respostas_revisores.ipynb:169:    "- **`matched_joint`** — uma permutação por camada, estimada pela assinatura da cabeça em **todas** as relações; recomputa o ρ por relação sobre as cabeças casadas.\n",
+./notebooks/notebook_respostas_revisores.ipynb:170:    "- **`matched_loo`** — *leave-one-out*: casa as cabeças usando as **demais** relações (exclui a relação avaliada). Evita circularidade e é o número mais defensável para o texto.\n",
+./notebooks/notebook_respostas_revisores.ipynb:185:      "deprel  rho_micro_index  rho_micro_matched_joint  rho_micro_matched_loo\n",
+./notebooks/notebook_respostas_revisores.ipynb:194:    "def layer_permutations(TA, TB, keep_dims):\n",
+./notebooks/notebook_respostas_revisores.ipynb:201:    "        _, ci = linear_sum_assignment(C)\n",
+./notebooks/notebook_respostas_revisores.ipynb:205:    "def micro_pair(frame, la, lb, mode=\"matched_loo\"):\n",
+./notebooks/notebook_respostas_revisores.ipynb:206:    "    '''Retorna dict {dep: rho_micro} para o par (la,lb) sob o modo escolhido.'''\n",
+./notebooks/notebook_respostas_revisores.ipynb:213:    "            keep = list(range(len(DEPS))) if mode==\"matched_joint\" \\\n",
+./notebooks/notebook_respostas_revisores.ipynb:215:    "            perms=layer_permutations(TA,TB,keep)\n",
+./notebooks/notebook_respostas_revisores.ipynb:218:    "        out[dep]=spearman(a.flatten(), b.flatten())\n",
+./notebooks/notebook_respostas_revisores.ipynb:221:    "def micro_weighted_mean(frame, mode):\n",
+./notebooks/notebook_respostas_revisores.ipynb:227:    "            r=micro_pair(frame,la,lb,mode)[dep]\n",
+./notebooks/notebook_respostas_revisores.ipynb:230:    "        rows.append({\"deprel\":dep, f\"rho_micro_{mode}\": (num/den if den>0 else np.nan)})\n",
+./notebooks/notebook_respostas_revisores.ipynb:233:    "tbl = micro_weighted_mean(d,\"index\")\n",
+./notebooks/notebook_respostas_revisores.ipynb:234:    "for mode in [\"matched_joint\",\"matched_loo\"]:\n",
+./notebooks/notebook_respostas_revisores.ipynb:235:    "    tbl = tbl.merge(micro_weighted_mean(d,mode), on=\"deprel\")\n",
+./notebooks/notebook_respostas_revisores.ipynb:245:    "**Como ler:** se `matched_loo` ≫ `index`, parte da \"dissociação micro/macro\" era artefato de\n",
+./notebooks/notebook_respostas_revisores.ipynb:246:    "permutação e a conclusão precisa ser reescrita. Se `matched_loo` ≈ `index` (continua baixo), a\n",
+./notebooks/notebook_respostas_revisores.ipynb:292:      "=== matched_loo (proposto) ===\n",
+./notebooks/notebook_respostas_revisores.ipynb:322:    "        r=micro_pair(frame,la,lb,mode)\n",
+./notebooks/notebook_respostas_revisores.ipynb:327:    "loo_pairs = pair_table(d,\"matched_loo\")\n",
+./notebooks/notebook_respostas_revisores.ipynb:329:    "print(\"\\n=== matched_loo (proposto) ===\"); print(loo_pairs.to_string(index=False))"
+./notebooks/notebook_respostas_revisores.ipynb:341:    "O `run_ud_attention_eval.py` já grava **as duas direções**. Aqui recomputamos o ρ_micro (média\n",
+./notebooks/notebook_respostas_revisores.ipynb:355:      "rho_micro (index) por direcao:\n",
+./notebooks/notebook_respostas_revisores.ipynb:365:    "def micro_by_direction(direction, mode=\"index\"):\n",
+./notebooks/notebook_respostas_revisores.ipynb:375:    "            r=micro_pair(sub,la,lb,mode)[dep]\n",
+./notebooks/notebook_respostas_revisores.ipynb:384:    "    t=micro_by_direction(dr,\"index\")\n",
+./notebooks/notebook_respostas_revisores.ipynb:386:    "print(\"rho_micro (index) por direcao:\")\n",
+./notebooks/notebook_respostas_revisores.ipynb:401:    "em cada relação/modelo e medimos: (i) **Jaccard** da sobreposição entre línguas e (ii) ρ_micro\n",
+./notebooks/notebook_respostas_revisores.ipynb:439:      "rho_micro restrito a uniao das top-10 cabecas:\n",
+./notebooks/notebook_respostas_revisores.ipynb:478:    "def micro_restricted_topk(frame, dep, k=10):\n",
+./notebooks/notebook_respostas_revisores.ipynb:479:    "    ''' rho_micro calculado apenas na uniao das top-k cabecas de cada par.'''\n",
+./notebooks/notebook_respostas_revisores.ipynb:484:    "        recs.append({\"par\":f\"{la}-{lb}\", dep:round(spearman(va,vb),3)})\n",
+./notebooks/notebook_respostas_revisores.ipynb:493:    "print(f\"\\nrho_micro restrito a uniao das top-{K} cabecas:\")\n",
+./notebooks/notebook_respostas_revisores.ipynb:494:    "res=micro_restricted_topk(d,DEPS[0],K)\n",
+./notebooks/notebook_respostas_revisores.ipynb:495:    "for dep in DEPS[1:]: res=res.merge(micro_restricted_topk(d,dep,K),on=\"par\")\n",
+./notebooks/notebook_respostas_revisores.ipynb:533:    "        r=micro_pair(frame,LANGS[i],LANGS[j],mode)[dep]\n",
+./notebooks/notebook_respostas_revisores.ipynb:667:      "micro_between_files() pronto para comparar 2 CSVs (mesma lingua, modelos diferentes).\n"
+./notebooks/notebook_respostas_revisores.ipynb:686:    "# analise a uma sub-grade comum OU compare apenas no nivel macro (perfil por camada normalizado).\n",
+./notebooks/notebook_respostas_revisores.ipynb:689:    "def micro_between_files(csv_a, csv_b, dep, direction=\"head_to_dep\"):\n",
+./notebooks/notebook_respostas_revisores.ipynb:699:    "    return spearman(va[:n], vb[:n])\n",
+./notebooks/notebook_respostas_revisores.ipynb:700:    "print(\"micro_between_files() pronto para comparar 2 CSVs (mesma lingua, modelos diferentes).\")"
+./notebooks/notebook_respostas_revisores.ipynb:713:      "Plano 6c documentado. Use a mesma micro_between_files() entre as duas seeds.\n"
+./notebooks/notebook_respostas_revisores.ipynb:721:    "#   r = micro_between_files(\"data/outputs/pt_seed13.csv\",\"data/outputs/pt_seed42.csv\",\"nsubj\")\n",
+./notebooks/notebook_respostas_revisores.ipynb:723:    "print(\"Plano 6c documentado. Use a mesma micro_between_files() entre as duas seeds.\")"
+./notebooks/notebook_respostas_revisores.ipynb:844:    "2. A **Seção 1** é a de maior impacto: rode e decida a redação da dissociação micro/macro pelos resultados de `matched_loo`.\n",
+./notebooks/notebook_respostas_revisores.ipynb:846:    "4. Reporte no artigo: seeds de amostragem, método de matching usado, e os números `index` vs `matched_loo` lado a lado."
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:15:    "| 1 | **Invariância de permutação de cabeças** (2 revisores) | Recalcula o ρ_micro casando cabeças entre modelos (Hungarian) em vez de comparar por índice absoluto |\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:50:    "from scipy.optimize import linear_sum_assignment\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:66:    "        pt=rng.random((L,H)); perm=rng.permutation(H)\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:106:    "### Funções auxiliares (vetor 144, matriz 12×12, Spearman, pesos)"
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:116:    "def spearman(a, b):\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:135:    "    '''[L,H,n_dep] assinatura de cada cabeca atraves das relacoes (para o matching).'''\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:146:    "## 1. Head matching (responde à invariância de permutação) — **prioridade máxima**\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:148:    "> *\"Comparing heads by absolute index across independently trained models ignores permutation\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:149:    "> invariance\" / \"A head-matching step per layer would be a fairer test of micro-level generalization\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:153:    "independente. O ρ_micro atual pode estar artificialmente baixo só por isso. Aqui recomputamos o\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:154:    "ρ_micro **casando as cabeças** dentro de cada camada com o algoritmo húngaro\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:155:    "(`scipy.optimize.linear_sum_assignment`), em três variantes:\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:158:    "- **`matched_joint`** — uma permutação por camada, estimada pela assinatura da cabeça em **todas** as relações; recomputa o ρ por relação sobre as cabeças casadas.\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:159:    "- **`matched_loo`** — *leave-one-out*: casa as cabeças usando as **demais** relações (exclui a relação avaliada). Evita circularidade e é o número mais defensável para o texto.\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:171:    "def layer_permutations(TA, TB, keep_dims):\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:178:    "        _, ci = linear_sum_assignment(C)\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:182:    "def micro_pair(frame, la, lb, mode=\"matched_loo\"):\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:183:    "    '''Retorna dict {dep: rho_micro} para o par (la,lb) sob o modo escolhido.'''\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:190:    "            keep = list(range(len(DEPS))) if mode==\"matched_joint\" \\\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:192:    "            perms=layer_permutations(TA,TB,keep)\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:195:    "        out[dep]=spearman(a.flatten(), b.flatten())\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:198:    "def micro_weighted_mean(frame, mode):\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:204:    "            r=micro_pair(frame,la,lb,mode)[dep]\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:207:    "        rows.append({\"deprel\":dep, f\"rho_micro_{mode}\": (num/den if den>0 else np.nan)})\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:210:    "tbl = micro_weighted_mean(d,\"index\")\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:211:    "for mode in [\"matched_joint\",\"matched_loo\"]:\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:212:    "    tbl = tbl.merge(micro_weighted_mean(d,mode), on=\"deprel\")\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:222:    "**Como ler:** se `matched_loo` ≫ `index`, parte da \"dissociação micro/macro\" era artefato de\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:223:    "permutação e a conclusão precisa ser reescrita. Se `matched_loo` ≈ `index` (continua baixo), a\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:245:    "        r=micro_pair(frame,la,lb,mode)\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:250:    "loo_pairs = pair_table(d,\"matched_loo\")\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:252:    "print(\"\\n=== matched_loo (proposto) ===\"); print(loo_pairs.to_string(index=False))"
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:264:    "O `run_ud_attention_eval.py` já grava **as duas direções**. Aqui recomputamos o ρ_micro (média\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:275:    "def micro_by_direction(direction, mode=\"index\"):\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:285:    "            r=micro_pair(sub,la,lb,mode)[dep]\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:294:    "    t=micro_by_direction(dr,\"index\")\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:296:    "print(\"rho_micro (index) por direcao:\")\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:311:    "em cada relação/modelo e medimos: (i) **Jaccard** da sobreposição entre línguas e (ii) ρ_micro\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:334:    "def micro_restricted_topk(frame, dep, k=10):\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:335:    "    ''' rho_micro calculado apenas na uniao das top-k cabecas de cada par.'''\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:340:    "        recs.append({\"par\":f\"{la}-{lb}\", dep:round(spearman(va,vb),3)})\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:349:    "print(f\"\\nrho_micro restrito a uniao das top-{K} cabecas:\")\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:350:    "res=micro_restricted_topk(d,DEPS[0],K)\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:351:    "for dep in DEPS[1:]: res=res.merge(micro_restricted_topk(d,dep,K),on=\"par\")\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:378:    "        r=micro_pair(frame,LANGS[i],LANGS[j],mode)[dep]\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:496:    "# analise a uma sub-grade comum OU compare apenas no nivel macro (perfil por camada normalizado).\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:499:    "def micro_between_files(csv_a, csv_b, dep, direction=\"head_to_dep\"):\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:509:    "    return spearman(va[:n], vb[:n])\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:510:    "print(\"micro_between_files() pronto para comparar 2 CSVs (mesma lingua, modelos diferentes).\")"
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:523:    "#   r = micro_between_files(\"data/outputs/pt_seed13.csv\",\"data/outputs/pt_seed42.csv\",\"nsubj\")\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:525:    "print(\"Plano 6c documentado. Use a mesma micro_between_files() entre as duas seeds.\")"
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:601:    "2. A **Seção 1** é a de maior impacto: rode e decida a redação da dissociação micro/macro pelos resultados de `matched_loo`.\n",
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb:603:    "4. Reporte no artigo: seeds de amostragem, método de matching usado, e os números `index` vs `matched_loo` lado a lado."
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:20:    "- §6 — Visualizations (layer profiles, heatmaps, Spearman matrices)\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:218:    "We compute Spearman correlation between attention profiles of language pairs\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:220:    "- **Micro** ($\\rho_{\\text{micro}}$): 144-position vectors (layer × head)\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:221:    "- **Macro** ($\\rho_{\\text{macro}}$): 12-position vectors (mean by layer)\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:282:    "m_rom = m_rom[m_rom[\"split\"] == \"(todos)\"][[\"deprel\", \"spearman_wmean\", \"spearman_mean_layer\"]].copy()\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:283:    "m_rom.columns = [\"deprel\", \"micro_ROM\", \"macro_ROM\"]\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:285:    "m_all = m[m[\"split\"] == \"(todos)\"][[\"deprel\", \"spearman_wmean\", \"spearman_mean_layer\"]].copy()\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:286:    "m_all.columns = [\"deprel\", \"micro_ALL\", \"macro_ALL\"]\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:289:    "cmp[\"delta_micro\"] = cmp[\"micro_ALL\"] - cmp[\"micro_ROM\"]\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:290:    "cmp[\"delta_macro\"] = cmp[\"macro_ALL\"] - cmp[\"macro_ROM\"]\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:300:    "## §5 — Pairwise Spearman correlation across languages\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:316:    "from scipy.stats import spearmanr\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:348:    "                rho, _ = spearmanr(vecs[li], vecs[lj])\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:433:    "                rho, _ = spearmanr(vecs[langs[i]], vecs[langs[j]])\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:452:    "    fig.savefig(FIGURAS_DIR / f\"spearman_{dep}.pdf\")\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:453:    "    fig.savefig(FIGURAS_DIR / f\"spearman_{dep}.png\", dpi=150)\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:455:    "    print(f\"[saved] spearman_{dep}.pdf\")"
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:463:    "### §6.3 — Spearman correlation matrices across languages\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:498:    "        print(f\"  {r['split']:20s}  rho_micro={r['spearman_wmean']:.4f}  rho_macro={r['spearman_mean_layer']:.4f}  S={r['stability_score_0_1']:.4f}\")\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:503:    "    micro_std=(\"spearman_wmean\", \"std\"),\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:504:    "    macro_std=(\"spearman_mean_layer\", \"std\"),\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:578:    "| Figure 1 — Spearman matrices | `figuras/spearman_*_en.pdf` | §6.3 |\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:590:    "Extension: Bootstrap + permutation for statistical significance\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:597:    "from scipy.stats import spearmanr\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:620:    "def weighted_micro(df_local, dep):\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:632:    "        rho, _ = spearmanr(vecs[l1], vecs[l2])\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:644:    "    observed = weighted_micro(df, dep)\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:646:    "    # Bootstrap\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:659:    "            boot_vals.append(weighted_micro(boot_df, dep))\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:664:    "    # Permutation\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:668:    "        perm_df[\"mean_attention\"] = rng.permutation(perm_df[\"mean_attention\"].values)\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:669:    "        perm_vals.append(weighted_micro(perm_df, dep))\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:679:    "        \"rho_micro\": observed,\n",
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb:688:    "res = pd.DataFrame(results).sort_values(\"rho_micro\", ascending=False)\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:16:    "   diferentes da *mesma* língua (índice, matched-LOO e camada).\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:39:    "from scipy.optimize import linear_sum_assignment\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:179:    "> restrinja a uma sub-grade comum (12×12) ou compare só no nível macro. A função abaixo\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:191:    "from scipy.optimize import linear_sum_assignment\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:215:    "def two_models_same_language(csv_a, csv_b, direction=\"head_to_dep\", macro_points=12):\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:225:    "        print(f\"{'rel':6} {'index':>8} {'matched':>8} {'layer':>8}\")\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:231:    "                _, ci = linear_sum_assignment(C); bb[l] = SB[l, ci, di]\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:237:    "        print(f\"Index/matched nao se aplicam (no de cabecas difere). So macro,\")\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:238:    "        print(f\"reamostrado por profundidade relativa para {macro_points} pontos:\")\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:239:    "        print(f\"{'rel':6} {'macro_resampled':>16}\")\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:241:    "            ua = _resample(_layer_profile(a, dep, La, Ha), macro_points)\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:242:    "            ub = _resample(_layer_profile(b, dep, Lb, Hb), macro_points)\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:336:      "Index/matched nao se aplicam (no de cabecas difere). So macro,\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:338:      "rel     macro_resampled\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:358:    "**Interpretação.** Um `matched` alto entre dois modelos da **mesma língua** mostra que\n",
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb:450:      "rel       index  matched    layer\n",
+./notebooks/controls_supplementary.ipynb:16:    "   diferentes da *mesma* língua (índice, matched-LOO e camada).\n",
+./notebooks/controls_supplementary.ipynb:39:    "from scipy.optimize import linear_sum_assignment\n",
+./notebooks/controls_supplementary.ipynb:179:    "> restrinja a uma sub-grade comum (12×12) ou compare só no nível macro. A função abaixo\n",
+./notebooks/controls_supplementary.ipynb:191:    "from scipy.optimize import linear_sum_assignment\n",
+./notebooks/controls_supplementary.ipynb:215:    "def two_models_same_language(csv_a, csv_b, direction=\"head_to_dep\", macro_points=12):\n",
+./notebooks/controls_supplementary.ipynb:225:    "        print(f\"{'rel':6} {'index':>8} {'matched':>8} {'layer':>8}\")\n",
+./notebooks/controls_supplementary.ipynb:231:    "                _, ci = linear_sum_assignment(C); bb[l] = SB[l, ci, di]\n",
+./notebooks/controls_supplementary.ipynb:237:    "        print(f\"Index/matched nao se aplicam (no de cabecas difere). So macro,\")\n",
+./notebooks/controls_supplementary.ipynb:238:    "        print(f\"reamostrado por profundidade relativa para {macro_points} pontos:\")\n",
+./notebooks/controls_supplementary.ipynb:239:    "        print(f\"{'rel':6} {'macro_resampled':>16}\")\n",
+./notebooks/controls_supplementary.ipynb:241:    "            ua = _resample(_layer_profile(a, dep, La, Ha), macro_points)\n",
+./notebooks/controls_supplementary.ipynb:242:    "            ub = _resample(_layer_profile(b, dep, Lb, Hb), macro_points)\n",
+./notebooks/controls_supplementary.ipynb:336:      "Index/matched nao se aplicam (no de cabecas difere). So macro,\n",
+./notebooks/controls_supplementary.ipynb:338:      "rel     macro_resampled\n",
+./notebooks/controls_supplementary.ipynb:358:    "**Interpretação.** Um `matched` alto entre dois modelos da **mesma língua** mostra que\n",
+./notebooks/controls_supplementary.ipynb:450:      "rel       index  matched    layer\n",
+./notebooks/notebook_experimento_final_en.ipynb:20:    "- §6 — Visualizations (layer profiles, heatmaps, Spearman matrices)\n",
+./notebooks/notebook_experimento_final_en.ipynb:218:    "We compute Spearman correlation between attention profiles of language pairs\n",
+./notebooks/notebook_experimento_final_en.ipynb:220:    "- **Micro** ($\\rho_{\\text{micro}}$): 144-position vectors (layer × head)\n",
+./notebooks/notebook_experimento_final_en.ipynb:221:    "- **Macro** ($\\rho_{\\text{macro}}$): 12-position vectors (mean by layer)\n",
+./notebooks/notebook_experimento_final_en.ipynb:282:    "m_rom = m_rom[m_rom[\"split\"] == \"(todos)\"][[\"deprel\", \"spearman_wmean\", \"spearman_mean_layer\"]].copy()\n",
+./notebooks/notebook_experimento_final_en.ipynb:283:    "m_rom.columns = [\"deprel\", \"micro_ROM\", \"macro_ROM\"]\n",
+./notebooks/notebook_experimento_final_en.ipynb:285:    "m_all = m[m[\"split\"] == \"(todos)\"][[\"deprel\", \"spearman_wmean\", \"spearman_mean_layer\"]].copy()\n",
+./notebooks/notebook_experimento_final_en.ipynb:286:    "m_all.columns = [\"deprel\", \"micro_ALL\", \"macro_ALL\"]\n",
+./notebooks/notebook_experimento_final_en.ipynb:289:    "cmp[\"delta_micro\"] = cmp[\"micro_ALL\"] - cmp[\"micro_ROM\"]\n",
+./notebooks/notebook_experimento_final_en.ipynb:290:    "cmp[\"delta_macro\"] = cmp[\"macro_ALL\"] - cmp[\"macro_ROM\"]\n",
+./notebooks/notebook_experimento_final_en.ipynb:300:    "## §5 — Pairwise Spearman correlation across languages\n",
+./notebooks/notebook_experimento_final_en.ipynb:316:    "from scipy.stats import spearmanr\n",
+./notebooks/notebook_experimento_final_en.ipynb:348:    "                rho, _ = spearmanr(vecs[li], vecs[lj])\n",
+./notebooks/notebook_experimento_final_en.ipynb:433:    "                rho, _ = spearmanr(vecs[langs[i]], vecs[langs[j]])\n",
+./notebooks/notebook_experimento_final_en.ipynb:452:    "    fig.savefig(FIGURAS_DIR / f\"spearman_{dep}.pdf\")\n",
+./notebooks/notebook_experimento_final_en.ipynb:453:    "    fig.savefig(FIGURAS_DIR / f\"spearman_{dep}.png\", dpi=150)\n",
+./notebooks/notebook_experimento_final_en.ipynb:455:    "    print(f\"[saved] spearman_{dep}.pdf\")"
+./notebooks/notebook_experimento_final_en.ipynb:463:    "### §6.3 — Spearman correlation matrices across languages\n",
+./notebooks/notebook_experimento_final_en.ipynb:498:    "        print(f\"  {r['split']:20s}  rho_micro={r['spearman_wmean']:.4f}  rho_macro={r['spearman_mean_layer']:.4f}  S={r['stability_score_0_1']:.4f}\")\n",
+./notebooks/notebook_experimento_final_en.ipynb:503:    "    micro_std=(\"spearman_wmean\", \"std\"),\n",
+./notebooks/notebook_experimento_final_en.ipynb:504:    "    macro_std=(\"spearman_mean_layer\", \"std\"),\n",
+./notebooks/notebook_experimento_final_en.ipynb:578:    "| Figure 1 — Spearman matrices | `figuras/spearman_*_en.pdf` | §6.3 |\n",
+./notebooks/notebook_experimento_final_en.ipynb:590:    "Extension: Bootstrap + permutation for statistical significance\n",
+./notebooks/notebook_experimento_final_en.ipynb:597:    "from scipy.stats import spearmanr\n",
+./notebooks/notebook_experimento_final_en.ipynb:620:    "def weighted_micro(df_local, dep):\n",
+./notebooks/notebook_experimento_final_en.ipynb:632:    "        rho, _ = spearmanr(vecs[l1], vecs[l2])\n",
+./notebooks/notebook_experimento_final_en.ipynb:644:    "    observed = weighted_micro(df, dep)\n",
+./notebooks/notebook_experimento_final_en.ipynb:646:    "    # Bootstrap\n",
+./notebooks/notebook_experimento_final_en.ipynb:659:    "            boot_vals.append(weighted_micro(boot_df, dep))\n",
+./notebooks/notebook_experimento_final_en.ipynb:664:    "    # Permutation\n",
+./notebooks/notebook_experimento_final_en.ipynb:668:    "        perm_df[\"mean_attention\"] = rng.permutation(perm_df[\"mean_attention\"].values)\n",
+./notebooks/notebook_experimento_final_en.ipynb:669:    "        perm_vals.append(weighted_micro(perm_df, dep))\n",
+./notebooks/notebook_experimento_final_en.ipynb:679:    "        \"rho_micro\": observed,\n",
+./notebooks/notebook_experimento_final_en.ipynb:688:    "res = pd.DataFrame(results).sort_values(\"rho_micro\", ascending=False)\n",

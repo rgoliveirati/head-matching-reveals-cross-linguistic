@@ -1,0 +1,15 @@
+./notebooks/controls_supplementary.ipynb
+./notebooks/.ipynb_checkpoints/controls_supplementary-checkpoint.ipynb
+./notebooks/.ipynb_checkpoints/notebook_experimento_final_en-checkpoint.ipynb
+./notebooks/.ipynb_checkpoints/notebook_respostas_revisores-checkpoint.ipynb
+./notebooks/notebook_experimento_final_en.ipynb
+./notebooks/notebook_respostas_revisores.ipynb
+./scripts/reproduce_controls.sh
+./scripts/reproduce_head_matching.sh
+./src/build_generalization_report.py
+./src/compute_control_analyses.py
+./src/compute_generalization_metrics.py
+./src/compute_head_matching_metrics.py
+./src/lang_resources.py
+./src/run_ud_attention_eval.py
+./src/ud_attention_eval_core.py

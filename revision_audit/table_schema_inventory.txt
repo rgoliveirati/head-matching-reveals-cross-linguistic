@@ -1,0 +1,173 @@
+
+FILE: data/attention_all_splits.csv
+COLUMNS: ['lang', 'lang_group', 'model_id', 'model_family', 'treebank', 'split', 'deprel', 'layer', 'head', 'direction', 'mean_attention', 'std_attention', 'n_arcs']
+PREVIEW:
+lang lang_group                              model_id model_family             treebank split deprel  layer  head   direction  mean_attention  std_attention  n_arcs
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     1 head_to_dep        0.008115       0.006521    2767
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     1 dep_to_head        0.015811       0.012671    2767
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     2 head_to_dep        0.019034       0.015957    2767
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     2 dep_to_head        0.034168       0.024246    2767
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     3 head_to_dep        0.019103       0.020059    2767
+
+
+FILE: data/outputs/pt_base.csv
+COLUMNS: ['lang', 'lang_group', 'model_id', 'model_family', 'treebank', 'split', 'deprel', 'layer', 'head', 'direction', 'mean_attention', 'std_attention', 'n_arcs']
+PREVIEW:
+lang lang_group                              model_id model_family             treebank split deprel  layer  head   direction  mean_attention  std_attention  n_arcs
+  pt   romanico neuralmind/bert-base-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     1 head_to_dep        0.017515       0.019963    1115
+  pt   romanico neuralmind/bert-base-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     1 dep_to_head        0.021696       0.022441    1115
+  pt   romanico neuralmind/bert-base-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     2 head_to_dep        0.033017       0.029618    1115
+  pt   romanico neuralmind/bert-base-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     2 dep_to_head        0.035996       0.026664    1115
+  pt   romanico neuralmind/bert-base-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     3 head_to_dep        0.043387       0.043494    1115
+
+
+FILE: data/outputs/gl_fpuentes.csv
+COLUMNS: ['lang', 'lang_group', 'model_id', 'model_family', 'treebank', 'split', 'deprel', 'layer', 'head', 'direction', 'mean_attention', 'std_attention', 'n_arcs']
+PREVIEW:
+lang lang_group               model_id model_family            treebank split deprel  layer  head   direction  mean_attention  std_attention  n_arcs
+  gl   romanico fpuentes/bert-galician       manual UD_Galician-TreeGal  test  nsubj      1     1 head_to_dep        0.025487       0.021159     446
+  gl   romanico fpuentes/bert-galician       manual UD_Galician-TreeGal  test  nsubj      1     1 dep_to_head        0.028011       0.021133     446
+  gl   romanico fpuentes/bert-galician       manual UD_Galician-TreeGal  test  nsubj      1     2 head_to_dep        0.026041       0.017465     446
+  gl   romanico fpuentes/bert-galician       manual UD_Galician-TreeGal  test  nsubj      1     2 dep_to_head        0.022176       0.015174     446
+  gl   romanico fpuentes/bert-galician       manual UD_Galician-TreeGal  test  nsubj      1     3 head_to_dep        0.023717       0.018839     446
+
+
+FILE: data/outputs/pt_large.csv
+COLUMNS: ['lang', 'lang_group', 'model_id', 'model_family', 'treebank', 'split', 'deprel', 'layer', 'head', 'direction', 'mean_attention', 'std_attention', 'n_arcs']
+PREVIEW:
+lang lang_group                               model_id model_family             treebank split deprel  layer  head   direction  mean_attention  std_attention  n_arcs
+  pt   romanico neuralmind/bert-large-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     1 head_to_dep        0.019578       0.012213    1115
+  pt   romanico neuralmind/bert-large-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     1 dep_to_head        0.023590       0.015390    1115
+  pt   romanico neuralmind/bert-large-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     2 head_to_dep        0.055337       0.052153    1115
+  pt   romanico neuralmind/bert-large-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     2 dep_to_head        0.066032       0.055324    1115
+  pt   romanico neuralmind/bert-large-portuguese-cased       manual UD_Portuguese-Bosque  test  nsubj      1     3 head_to_dep        0.078395       0.076839    1115
+
+
+FILE: data/outputs/gl_marcosgg.csv
+COLUMNS: ['lang', 'lang_group', 'model_id', 'model_family', 'treebank', 'split', 'deprel', 'layer', 'head', 'direction', 'mean_attention', 'std_attention', 'n_arcs']
+PREVIEW:
+lang lang_group                    model_id model_family            treebank split deprel  layer  head   direction  mean_attention  std_attention  n_arcs
+  gl   romanico marcosgg/bert-base-gl-cased       manual UD_Galician-TreeGal  test  nsubj      1     1 head_to_dep        0.032315       0.029667     446
+  gl   romanico marcosgg/bert-base-gl-cased       manual UD_Galician-TreeGal  test  nsubj      1     1 dep_to_head        0.048865       0.042890     446
+  gl   romanico marcosgg/bert-base-gl-cased       manual UD_Galician-TreeGal  test  nsubj      1     2 head_to_dep        0.041127       0.041765     446
+  gl   romanico marcosgg/bert-base-gl-cased       manual UD_Galician-TreeGal  test  nsubj      1     2 dep_to_head        0.041281       0.031624     446
+  gl   romanico marcosgg/bert-base-gl-cased       manual UD_Galician-TreeGal  test  nsubj      1     3 head_to_dep        0.051791       0.052508     446
+
+
+FILE: data/.ipynb_checkpoints/attention_all_splits-checkpoint.csv
+COLUMNS: ['lang', 'lang_group', 'model_id', 'model_family', 'treebank', 'split', 'deprel', 'layer', 'head', 'direction', 'mean_attention', 'std_attention', 'n_arcs']
+PREVIEW:
+lang lang_group                              model_id model_family             treebank split deprel  layer  head   direction  mean_attention  std_attention  n_arcs
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     1 head_to_dep        0.008115       0.006521    2767
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     1 dep_to_head        0.015811       0.012671    2767
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     2 head_to_dep        0.019034       0.015957    2767
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     2 dep_to_head        0.034168       0.024246    2767
+  pt   romanico neuralmind/bert-base-portuguese-cased         mono UD_Portuguese-Bosque train   case      1     3 head_to_dep        0.019103       0.020059    2767
+
+
+FILE: results/controls/without_french_control.csv
+COLUMNS: ['deprel', 'metric', 'all_7', 'without_fr', 'delta', 'abs_delta']
+PREVIEW:
+deprel                  metric    all_7  without_fr     delta  abs_delta
+ nsubj         rho_micro_index 0.165929    0.185459  0.019529   0.019529
+ nsubj      rho_macro_weighted 0.445008    0.450528  0.005520   0.005520
+ nsubj rho_micro_matched_joint 0.682970    0.686210  0.003240   0.003240
+ nsubj   rho_micro_matched_loo 0.491814    0.489874 -0.001940   0.001940
+   obj         rho_micro_index 0.135576    0.160177  0.024600   0.024600
+
+
+FILE: results/controls/main_head_matching_summary.csv
+COLUMNS: ['deprel', 'n_langs', 'n_pairs', 'rho_micro_index', 'rho_macro_mean', 'rho_macro_weighted', 'rho_micro_matched_joint', 'rho_micro_matched_loo']
+PREVIEW:
+deprel  n_langs  n_pairs  rho_micro_index  rho_macro_mean  rho_macro_weighted  rho_micro_matched_joint  rho_micro_matched_loo
+ nsubj        7       21         0.165929        0.411921            0.445008                 0.682970               0.491814
+   obj        7       21         0.135576        0.351648            0.398181                 0.729941               0.578957
+  case        7       21         0.057064        0.158175            0.174216                 0.566206               0.322706
+  amod        7       21         0.089741        0.291375            0.322637                 0.676093               0.484739
+
+
+FILE: results/controls/train_test_stability.csv
+COLUMNS: ['deprel', 'metric', 'train', 'test', 'delta', 'abs_delta']
+PREVIEW:
+deprel                  metric    train     test    delta  abs_delta
+ nsubj         rho_micro_index 0.153175 0.165929 0.012754   0.012754
+ nsubj      rho_macro_weighted 0.396538 0.445008 0.048469   0.048469
+ nsubj rho_micro_matched_joint 0.659828 0.682970 0.023142   0.023142
+ nsubj   rho_micro_matched_loo 0.487898 0.491814 0.003916   0.003916
+   obj         rho_micro_index 0.130744 0.135576 0.004833   0.004833
+
+
+FILE: results/controls/romance_vs_german_control.csv
+COLUMNS: ['group', 'deprel', 'metric', 'n_pairs', 'mean', 'weighted_mean']
+PREVIEW:
+                          group deprel                  metric  n_pairs     mean  weighted_mean
+romance_romance_excluding_pt_gl  nsubj         rho_micro_index       14 0.140126       0.140362
+romance_romance_excluding_pt_gl  nsubj               rho_macro       14 0.405095       0.454112
+romance_romance_excluding_pt_gl  nsubj rho_micro_matched_joint       14 0.663324       0.671535
+romance_romance_excluding_pt_gl  nsubj   rho_micro_matched_loo       14 0.498489       0.498765
+romance_romance_excluding_pt_gl    obj         rho_micro_index       14 0.115271       0.124220
+
+
+FILE: results/controls/galician_two_models_control.csv
+COLUMNS: ['control', 'lang_a', 'lang_b', 'deprel', 'weight_min_n_arcs', 'rho_micro_index', 'rho_macro', 'rho_micro_matched_joint', 'rho_micro_matched_loo']
+PREVIEW:
+                   control      lang_a      lang_b deprel  weight_min_n_arcs  rho_micro_index  rho_macro  rho_micro_matched_joint  rho_micro_matched_loo
+gl_marcosgg_vs_gl_fpuentes gl_marcosgg gl_fpuentes  nsubj              446.0         0.140467   0.699301                 0.763584               0.654783
+gl_marcosgg_vs_gl_fpuentes gl_marcosgg gl_fpuentes    obj              465.0         0.160088   0.748252                 0.850205               0.752331
+gl_marcosgg_vs_gl_fpuentes gl_marcosgg gl_fpuentes   case             1364.0        -0.025729   0.489510                 0.698995               0.442902
+gl_marcosgg_vs_gl_fpuentes gl_marcosgg gl_fpuentes   amod              572.0         0.010703   0.769231                 0.816305               0.653119
+
+
+FILE: results/controls/main_pairwise_head_matching.csv
+COLUMNS: ['lang_a', 'lang_b', 'deprel', 'weight_min_n_arcs', 'rho_micro_index', 'rho_macro', 'rho_micro_matched_joint', 'rho_micro_matched_loo']
+PREVIEW:
+lang_a lang_b deprel  weight_min_n_arcs  rho_micro_index  rho_macro  rho_micro_matched_joint  rho_micro_matched_loo
+    de     es  nsubj             1136.0         0.202532   0.524476                 0.701563               0.468166
+    de     es    obj              584.0         0.124013   0.447552                 0.682377               0.334069
+    de     es   case             1525.0         0.046102   0.244755                 0.647106               0.324263
+    de     es   amod              793.0         0.077562   0.335664                 0.571200               0.335258
+    de     fr  nsubj              519.0         0.115782   0.118881                 0.648999               0.396057
+
+
+FILE: results/controls/without_pt_gl_pair.csv
+COLUMNS: ['group', 'deprel', 'metric', 'n_pairs', 'mean', 'weighted_mean']
+PREVIEW:
+    group deprel                  metric  n_pairs     mean  weighted_mean
+all_pairs  nsubj         rho_micro_index       21 0.171622       0.165929
+all_pairs  nsubj               rho_macro       21 0.411921       0.445008
+all_pairs  nsubj rho_micro_matched_joint       21 0.677768       0.682970
+all_pairs  nsubj   rho_micro_matched_loo       21 0.499850       0.491814
+all_pairs    obj         rho_micro_index       21 0.128004       0.135576
+
+
+FILE: results/controls/direction_control.csv
+COLUMNS: ['deprel', 'metric', 'head_to_dep', 'dep_to_head', 'delta', 'abs_delta']
+PREVIEW:
+deprel                  metric  head_to_dep  dep_to_head     delta  abs_delta
+ nsubj         rho_micro_index     0.165929     0.141708 -0.024221   0.024221
+ nsubj      rho_macro_weighted     0.445008     0.367509 -0.077499   0.077499
+ nsubj rho_micro_matched_joint     0.682970     0.658378 -0.024592   0.024592
+ nsubj   rho_micro_matched_loo     0.491814     0.527208  0.035394   0.035394
+   obj         rho_micro_index     0.135576     0.110667 -0.024909   0.024909
+
+
+FILE: results/controls/controls_manifest.csv
+COLUMNS: ['file', 'rows', 'status', 'description']
+PREVIEW:
+                                                     file  rows status                                                       description
+ /mnt/data/control_outputs/main_head_matching_summary.csv     4     ok Main mono/test/head_to_dep summary used as baseline for controls.
+/mnt/data/control_outputs/main_pairwise_head_matching.csv    84     ok          Main pairwise correlations used for pair-level controls.
+     /mnt/data/control_outputs/without_french_control.csv    16     ok                      All languages vs. French/CamemBERT excluded.
+       /mnt/data/control_outputs/train_test_stability.csv    16     ok                    Train vs. test stability of aggregate metrics.
+          /mnt/data/control_outputs/direction_control.csv    16     ok               Main attention direction vs. alternative direction.
+
+
+FILE: results/controls/mono_vs_mbert_control.csv
+COLUMNS: ['deprel', 'metric', 'mono', 'mbert', 'delta', 'abs_delta']
+PREVIEW:
+deprel                  metric     mono    mbert    delta  abs_delta
+ nsubj         rho_micro_index 0.165929 0.916377 0.750448   0.750448
+ nsubj      rho_macro_weighted 0.445008 0.976546 0.531538   0.531538
+ nsubj rho_micro_matched_joint 0.682970 0.915540 0.232570   0.232570
+ nsubj   rho_micro_matched_loo 0.491814 0.892494 0.400680   0.400680
+   obj         rho_micro_index 0.135576 0.932051 0.796475   0.796475
