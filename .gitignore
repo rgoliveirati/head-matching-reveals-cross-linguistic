@@ -72,3 +72,5 @@ revision_outputs/distance_attention/
 *.bak*
 *.bak*
 revision_outputs/distance_attention/
+*.bak*
+revision_outputs/distance_attention/
