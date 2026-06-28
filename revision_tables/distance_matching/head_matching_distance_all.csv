@@ -1,0 +1,5 @@
+deprel,n_langs,n_pairs,rho_micro_index,rho_macro_mean,rho_macro_weighted,rho_micro_matched_joint,rho_micro_matched_loo,arc_weight_agg
+nsubj,7,21,0.165929,0.411921,0.445008,0.68297,0.491814,max
+obj,7,21,0.135576,0.351648,0.398181,0.729941,0.578957,max
+case,7,21,0.057064,0.158175,0.174216,0.566206,0.322706,max
+amod,7,21,0.089741,0.291375,0.322637,0.676093,0.484739,max

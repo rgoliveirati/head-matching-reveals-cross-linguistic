@@ -76,9 +76,7 @@ def resolve_split_path(ud_info: Dict[str, object], split: str):
 
 def run_one(lang: str, split: str, model_id: str, model_family: str,
             max_sents: int, rel_filter: Optional[List[str]], max_len: int,
-            export_long: bool, long_budget: int,
-            min_arc_distance: Optional[int] = None,
-            max_arc_distance: Optional[int] = None):
+            export_long: bool, long_budget: int):
     ud = ensure_ud_treebank(lang)
     treebank = ud["repo"]
     split_path, split_tag = resolve_split_path(ud, split)
@@ -116,14 +114,6 @@ def run_one(lang: str, split: str, model_id: str, model_family: str,
                     continue
                 if rel_filter is not None and t.deprel not in rel_filter:
                     continue
-
-                arc_distance = abs(t.id - t.head)
-
-                if min_arc_distance is not None and arc_distance < min_arc_distance:
-                    continue
-                if max_arc_distance is not None and arc_distance > max_arc_distance:
-                    continue
-
                 if t.head not in word2tok or t.id not in word2tok:
                     continue
 
@@ -150,7 +140,6 @@ def run_one(lang: str, split: str, model_id: str, model_family: str,
                                     "treebank": treebank, "split": split_tag,
                                     "deprel": t.deprel, "layer": layer + 1, "head": head + 1,
                                     "direction": "head_to_dep", "attention": float(a_hd),
-                                    "arc_distance": int(arc_distance),
                                 })
                                 long_budget -= 1
 
@@ -167,7 +156,6 @@ def run_one(lang: str, split: str, model_id: str, model_family: str,
                                     "treebank": treebank, "split": split_tag,
                                     "deprel": t.deprel, "layer": layer + 1, "head": head + 1,
                                     "direction": "dep_to_head", "attention": float(a_dh),
-                                    "arc_distance": int(arc_distance),
                                 })
                                 long_budget -= 1
         except Exception:
@@ -205,10 +193,6 @@ def main():
     ap.add_argument("--max_sents", type=int, default=1000)
     ap.add_argument("--rel_filter", type=str, default="nsubj,obj,amod,case")
     ap.add_argument("--max_len", type=int, default=512)
-    ap.add_argument("--min_arc_distance", type=int, default=None,
-                    help="Keep only UD arcs with abs(token_id - head_id) >= this value.")
-    ap.add_argument("--max_arc_distance", type=int, default=None,
-                    help="Keep only UD arcs with abs(token_id - head_id) <= this value.")
     ap.add_argument("--out_csv", type=str, default="romanic_attention_generalization_all_splits.csv")
     ap.add_argument("--export_long", action="store_true")
     ap.add_argument("--out_long", type=str, default="romanic_attention_generalization_long_sample.csv")
@@ -249,8 +233,6 @@ def main():
                     lang=lang, split=split, model_id=model_id, model_family=model_family,
                     max_sents=int(args.max_sents), rel_filter=rel_filter, max_len=int(args.max_len),
                     export_long=bool(args.export_long), long_budget=int(long_budget),
-                    min_arc_distance=args.min_arc_distance,
-                    max_arc_distance=args.max_arc_distance,
                 )
                 if df_part is not None and not df_part.empty:
                     all_rows.append(df_part)
