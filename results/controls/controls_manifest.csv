@@ -1,10 +1,10 @@
 file,rows,status,description
-/mnt/data/control_outputs/main_head_matching_summary.csv,4,ok,Main mono/test/head_to_dep summary used as baseline for controls.
-/mnt/data/control_outputs/main_pairwise_head_matching.csv,84,ok,Main pairwise correlations used for pair-level controls.
-/mnt/data/control_outputs/without_french_control.csv,16,ok,All languages vs. French/CamemBERT excluded.
-/mnt/data/control_outputs/train_test_stability.csv,16,ok,Train vs. test stability of aggregate metrics.
-/mnt/data/control_outputs/direction_control.csv,16,ok,Main attention direction vs. alternative direction.
-/mnt/data/control_outputs/mono_vs_mbert_control.csv,16,ok,Monolingual models vs. mBERT profiles.
-/mnt/data/control_outputs/without_pt_gl_pair.csv,32,ok,Pairwise aggregate metrics with and without the Portuguese--Galician pair.
-/mnt/data/control_outputs/romance_vs_german_control.csv,32,ok,Romance--Romance excluding PT--GL vs. German--Romance pair groups.
-/mnt/data/control_outputs/galician_two_models_control.csv,4,ok,Two independently trained Galician BERT models.
+results/controls/main_head_matching_summary.csv,4,ok,Main mono/test/head_to_dep summary used as baseline for controls.
+results/controls/main_pairwise_head_matching.csv,84,ok,Main pairwise correlations used for pair-level controls.
+results/controls/without_french_control.csv,16,ok,All languages vs. French/CamemBERT excluded.
+results/controls/train_test_stability.csv,16,ok,Train vs. test stability of aggregate metrics.
+results/controls/direction_control.csv,16,ok,Main attention direction vs. alternative direction.
+results/controls/mono_vs_mbert_control.csv,16,ok,Monolingual models vs. mBERT profiles.
+results/controls/without_pt_gl_pair.csv,32,ok,Pairwise aggregate metrics with and without the Portuguese--Galician pair.
+results/controls/romance_vs_german_control.csv,32,ok,Romance--Romance excluding PT--GL vs. German--Romance pair groups.
+results/controls/galician_two_models_control.csv,4,ok,Two independently trained Galician BERT models.

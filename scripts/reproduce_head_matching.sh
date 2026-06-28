@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ATTN_CSV="${1:-data/outputs/attention_mono_all_splits.csv}"
+ATTN_CSV="${1:-data/attention_all_splits.csv}"
 OUT_DIR="${2:-results}"
 
 python src/compute_head_matching_metrics.py \

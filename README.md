@@ -254,7 +254,7 @@ The first file reproduces the central table of the paper.
 You may also run:
 
 ```bash
-bash src/reproduce_head_matching.sh
+bash scripts/reproduce_head_matching.sh
 ```
 
 ## Reproducing Index-Based Metrics and Entropy
