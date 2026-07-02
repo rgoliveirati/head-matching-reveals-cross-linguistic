@@ -401,13 +401,6 @@ huggingface_hub 0.36.2. Full pinned environment: requirements-lock.txt.
 ### Hardware
 NVIDIA GeForce RTX 3050 Laptop GPU (6 GB VRAM), driver 580.126.09, CUDA 13.0.
 
-### Notes on ud_arc_distance_arcs.csv
-The raw arc-inventory CSV may include rows from per-document Bosque files
-(CF*/CP*, present in the UD_Portuguese-Bosque repository) labeled
-split="unknown". All reported analyses filter split=="test" and are
-unaffected. Table 6 arc counts come from the attention pipeline
-(1000-sentence cap per split), not from this CSV.
-
 ## 17. Status
 
 The current repository is sufficient to reproduce the central manuscript finding:
