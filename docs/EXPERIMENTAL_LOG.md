@@ -372,6 +372,42 @@ src/ud_attention_eval_core.py
 
 ---
 
+## Reproducibility Details
+
+### UD treebanks
+Universal Dependencies release 2.17. All seven test-split files verified
+byte-identical to the official r2.17 tags of the UniversalDependencies
+GitHub repositories: UD_Portuguese-Bosque, UD_Galician-TreeGal,
+UD_Spanish-AnCora, UD_French-GSD, UD_Italian-ISDT, UD_Romanian-RRT,
+UD_German-GSD. (Portuguese-Bosque files unchanged since r2.12;
+Galician-TreeGal since r2.16.) Per-file sentence counts: treebank_counts.txt.
+
+### Model revisions (Hugging Face commit SHAs)
+| Model | Revision |
+|---|---|
+| neuralmind/bert-base-portuguese-cased | 94d69c95f98f7d5b2a8700c420230ae10def0baa |
+| marcosgg/bert-base-gl-cased | 89fde9bede4c9893971da71e0b8556719e938dbc |
+| dccuchile/bert-base-spanish-wwm-cased | c4d86612f51b4f46759c8390d1798c2febe71b93 |
+| camembert-base | a75967561c78f2aa81cc41045378d3b4ee25af9e |
+| dbmdz/bert-base-italian-xxl-cased | 9bdf84aedf00aa4e99b01a6f2c76f6070ac7240b |
+| dumitrescustefan/bert-base-romanian-cased-v1 | 37fb0ffb4bc4f7c4cde429626775685fb18f234f |
+| bert-base-german-cased | 0b061b4f7ce140d10dce6b6bd8a77da8ec80931b |
+
+### Software
+Python X.X.X. Key packages: transformers 4.48.0, tokenizers 0.21.4,
+torch 2.5.1, numpy 2.3.2, scipy 1.15.3, conllu 6.0.0, pyconll 3.2.0,
+huggingface_hub 0.36.2. Full pinned environment: requirements-lock.txt.
+
+### Hardware
+NVIDIA GeForce RTX 3050 Laptop GPU (6 GB VRAM), driver 580.126.09, CUDA 13.0.
+
+### Notes on ud_arc_distance_arcs.csv
+The raw arc-inventory CSV may include rows from per-document Bosque files
+(CF*/CP*, present in the UD_Portuguese-Bosque repository) labeled
+split="unknown". All reported analyses filter split=="test" and are
+unaffected. Table 6 arc counts come from the attention pipeline
+(1000-sentence cap per split), not from this CSV.
+
 ## 17. Status
 
 The current repository is sufficient to reproduce the central manuscript finding:
