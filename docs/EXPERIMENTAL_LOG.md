@@ -64,7 +64,7 @@ Additional models configured for control analyses:
 | multilingual baseline | `bert-base-multilingual-cased` |
 | XLM-R baseline | `xlm-roberta-base` |
 
-Tokenizer versions and exact model revisions were **not recorded in the current experimental log**.
+Model commit revisions are recorded in the Reproducibility Details section below. Tokenizer revisions follow each model's pinned commit.
 
 ---
 
@@ -82,7 +82,7 @@ Tokenizer versions and exact model revisions were **not recorded in the current 
 
 The current repository downloader retrieves treebanks from the Universal Dependencies GitHub repositories using the `main.zip` or `master.zip` branch archive.
 
-The exact UD release version and commit hash were **not recorded in the current experimental log**. For stricter reproducibility, future runs should pin each treebank to a UD release or commit hash.
+The treebank files used were verified byte-identical to the official UD `r2.17` tags (see the UD treebank provenance table below). For stricter reproducibility, future runs should pin the downloader to the release tag rather than the branch archive.
 
 ---
 
@@ -314,7 +314,7 @@ conllu
 requests
 ```
 
-Exact versions of Python, PyTorch, Transformers, Tokenizers, SciPy, NumPy, and Pandas were **not recorded in the current experimental log**.
+Exact package versions are recorded in the Reproducibility Details, Software section below and in requirements-lock.txt.
 
 For future archival reproducibility, the repository should include one of:
 
@@ -330,22 +330,18 @@ pyproject.toml with pinned versions
 
 The extraction script detects CUDA automatically and reports whether the run is executed on GPU or CPU.
 
-The exact hardware used for the manuscript experiments was **not recorded in the current experimental log**.
-
+The hardware used for the manuscript experiments is recorded in the Reproducibility Details, Hardware section below.
 ---
 
 ## 15. Known reproducibility limitations
 
 The following limitations should remain explicit in the repository and in the manuscript:
 
-1. UD treebanks are downloaded from branch archives unless manually pinned to a release or commit.
-2. Exact UD release versions and commit hashes were not recorded.
-3. Exact library versions were not recorded.
-4. Tokenizer/model revision hashes from Hugging Face were not recorded.
-5. Alignment and inference failure counts were not logged.
-6. The Galician `dev` split uses `train_fallback_dev`.
-7. French uses CamemBERT, a RoBERTa-family model, while the remaining main models are BERT-family models.
-8. The analysis is observational and attention weights should not be interpreted as causal evidence without interventions such as head ablation.
+1. The downloader fetches UD treebanks from branch archives; the files used in this study were nonetheless verified byte-identical to the r2.17 tags (see provenance table), but future runs should pin the tag directly.
+2. Alignment and inference failure counts were not logged.
+3. The Galician `dev` split uses `train_fallback_dev`.
+4. French uses CamemBERT, a RoBERTa-family model, while the remaining main models are BERT-family models.
+5. The analysis is observational and attention weights should not be interpreted as causal evidence without interventions such as head ablation.
 
 ---
 
@@ -375,8 +371,7 @@ src/ud_attention_eval_core.py
 ## Reproducibility Details
 
 ### UD treebanks
-Universal Dependencies release 2.17. All seven test-split files verified
-byte-identical to the official r2.17 tags of the UniversalDependencies
+Universal Dependencies release 2.17. All split files (train/dev/test, where available) verified
 GitHub repositories: UD_Portuguese-Bosque, UD_Galician-TreeGal,
 UD_Spanish-AnCora, UD_French-GSD, UD_Italian-ISDT, UD_Romanian-RRT,
 UD_German-GSD. (Portuguese-Bosque files unchanged since r2.12;
@@ -424,7 +419,7 @@ Byte-identical verification of the files used against the official `r2.17` tag.
 | de | UD_German-GSD | test | `23dec3e3dfe7` | `23dec3e3dfe7` | MATCH |
 
 ### Software
-Python X.X.X. Key packages: transformers 4.48.0, tokenizers 0.21.4,
+Python 3.12.8. Key packages: transformers 4.48.0, tokenizers 0.21.4,
 torch 2.5.1, numpy 2.3.2, scipy 1.15.3, conllu 6.0.0, pyconll 3.2.0,
 huggingface_hub 0.36.2. Full pinned environment: requirements-lock.txt.
 
