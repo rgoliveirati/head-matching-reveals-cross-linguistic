@@ -393,6 +393,34 @@ Galician-TreeGal since r2.16.) Per-file sentence counts: treebank_counts.txt.
 | dumitrescustefan/bert-base-romanian-cased-v1 | 37fb0ffb4bc4f7c4cde429626775685fb18f234f |
 | bert-base-german-cased | 0b061b4f7ce140d10dce6b6bd8a77da8ec80931b |
 
+## UD treebank provenance (tag r2.17)
+
+Byte-identical verification of the files used against the official `r2.17` tag.
+
+| Língua | Treebank | Split | SHA-256 local (12) | SHA-256 ref (12) | Status |
+|---|---|---|---|---|---|
+| pt | UD_Portuguese-Bosque | train | `b56d7124af82` | `b56d7124af82` | MATCH |
+| pt | UD_Portuguese-Bosque | dev | `f8a67abae12f` | `f8a67abae12f` | MATCH |
+| pt | UD_Portuguese-Bosque | test | `9a824650b7a0` | `9a824650b7a0` | MATCH |
+| gl | UD_Galician-TreeGal | train | `2e469c3bd17a` | `2e469c3bd17a` | MATCH |
+| gl | UD_Galician-TreeGal | dev | `—` | `—` | MISSING_LOCAL |
+| gl | UD_Galician-TreeGal | test | `685d6f2e8d4f` | `685d6f2e8d4f` | MATCH |
+| es | UD_Spanish-AnCora | train | `f235c5dcad8a` | `f235c5dcad8a` | MATCH |
+| es | UD_Spanish-AnCora | dev | `a7a6f1988095` | `a7a6f1988095` | MATCH |
+| es | UD_Spanish-AnCora | test | `abee215c3e8a` | `abee215c3e8a` | MATCH |
+| it | UD_Italian-ISDT | train | `7c3e32d7f296` | `7c3e32d7f296` | MATCH |
+| it | UD_Italian-ISDT | dev | `1bc7dda04c58` | `1bc7dda04c58` | MATCH |
+| it | UD_Italian-ISDT | test | `cea8ca0e8d1d` | `cea8ca0e8d1d` | MATCH |
+| fr | UD_French-GSD | train | `1f34be40a4c2` | `1f34be40a4c2` | MATCH |
+| fr | UD_French-GSD | dev | `e3e351618331` | `e3e351618331` | MATCH |
+| fr | UD_French-GSD | test | `a75470b1faa4` | `a75470b1faa4` | MATCH |
+| ro | UD_Romanian-RRT | train | `4a26cd02ade2` | `4a26cd02ade2` | MATCH |
+| ro | UD_Romanian-RRT | dev | `facd931151fa` | `facd931151fa` | MATCH |
+| ro | UD_Romanian-RRT | test | `ceb685dee7bc` | `ceb685dee7bc` | MATCH |
+| de | UD_German-GSD | train | `6e573e8c49b3` | `6e573e8c49b3` | MATCH |
+| de | UD_German-GSD | dev | `39c7b34178ca` | `39c7b34178ca` | MATCH |
+| de | UD_German-GSD | test | `23dec3e3dfe7` | `23dec3e3dfe7` | MATCH |
+
 ### Software
 Python X.X.X. Key packages: transformers 4.48.0, tokenizers 0.21.4,
 torch 2.5.1, numpy 2.3.2, scipy 1.15.3, conllu 6.0.0, pyconll 3.2.0,
