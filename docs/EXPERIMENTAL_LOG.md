@@ -392,6 +392,9 @@ Galician-TreeGal since r2.16.) Per-file sentence counts: treebank_counts.txt.
 | dbmdz/bert-base-italian-xxl-cased | 9bdf84aedf00aa4e99b01a6f2c76f6070ac7240b |
 | dumitrescustefan/bert-base-romanian-cased-v1 | 37fb0ffb4bc4f7c4cde429626775685fb18f234f |
 | bert-base-german-cased | 0b061b4f7ce140d10dce6b6bd8a77da8ec80931b |
+| fpuentes/bert-galician | 669aa3acce00e314afdd061d2377c62ef7e4f7a0 |
+| neuralmind/bert-large-portuguese-cased | aa302f6ea73b759f7df9cad58bd272127b67ec28 |
+| bert-base-multilingual-cased | 3f076fdb1ab68d5b2880cb87a0886f315b8146f8 |
 
 ## UD treebank provenance (tag r2.17)
 
