@@ -264,7 +264,7 @@ results/head_matching/pairwise_head_matching_test_head_to_dep_mono.csv
 results/head_matching/head_matching_permutations_test_head_to_dep_mono.csv
 ```
 
-The expected values for the main manuscript table are:
+The expected values for the main manuscript table (weighted micro aggregation) are:
 
 | Relation | Index-based micro | Macro | Matched joint | Matched LOO |
 |---|---:|---:|---:|---:|
@@ -376,6 +376,20 @@ GitHub repositories: UD_Portuguese-Bosque, UD_Galician-TreeGal,
 UD_Spanish-AnCora, UD_French-GSD, UD_Italian-ISDT, UD_Romanian-RRT,
 UD_German-GSD. (Portuguese-Bosque files unchanged since r2.12;
 Galician-TreeGal since r2.16.) Per-file sentence counts: treebank_counts.txt.
+
+## Aggregation and canonical data provenance
+
+### Micro-level aggregation
+- Primary metric: rho_micro is the weighted mean of the pairwise Spearman
+  correlations across language pairs, with weight w = min(n_arcs) per pair.
+- Robustness: the simple (unweighted) mean is also computed and reported as a
+  robustness check (columns `*_simple` in the head-matching output).
+- Both aggregations are emitted by src/compute_head_matching_metrics.py.
+
+### Canonical attention CSV
+- File: data/attention_all_splits.csv
+- SHA-256: 6e74d809e6c1915262a3326a81d6bd4b947583bd1b961536c06ef720205693a1
+- All manuscript tables are generated from this file via the scripts in src/.
 
 ### Model revisions (Hugging Face commit SHAs)
 | Model | Revision |

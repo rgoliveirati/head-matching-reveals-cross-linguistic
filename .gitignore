@@ -74,3 +74,13 @@ revision_outputs/distance_attention/
 revision_outputs/distance_attention/
 *.bak*
 revision_outputs/distance_attention/
+
+# Manuscript sources (kept out of the code repo)
+*.tex
+*.bib
+*.pdf
+
+# Transition scratch (not published)
+revision_tables/_obsolete_simple_aggregation/
+revision_tables/regen/
+revision_tables/controls_regen/

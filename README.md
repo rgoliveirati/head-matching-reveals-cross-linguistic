@@ -32,8 +32,7 @@ These values are computed on the `test` split, using monolingual models only, in
 The final manuscript table is also stored in:
 
 ```text
-revision_tables/final/final_revision_evidence_table.csv
-revision_tables/final/final_revision_tables.md
+revision_tables/matched_loo_inference_by_relation.csv
 ```
 
 ## Languages

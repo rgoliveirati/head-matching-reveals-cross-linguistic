@@ -54,7 +54,7 @@ def ci_percentile(x: np.ndarray, lo: float = 2.5, hi: float = 97.5) -> tuple[flo
 
 
 def infer_weights(df: pd.DataFrame) -> np.ndarray:
-    direct = pick_col(df, ["weight", "w", "pair_weight"], required=False)
+    direct = pick_col(df, ["weight_min_n_arcs", "weight", "w", "pair_weight"], required=False)
     if direct is not None:
         return df[direct].to_numpy(dtype=float)
 

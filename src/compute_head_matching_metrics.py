@@ -321,10 +321,13 @@ def summarize_pairs(pair_df: pd.DataFrame, cfg: Config) -> pd.DataFrame:
             "n_langs": len(cfg.langs),
             "n_pairs": len(sub),
             "rho_micro_index": weighted_mean(sub["rho_micro_index"], weights),
+            "rho_micro_index_simple": float(np.nanmean(sub["rho_micro_index"].to_numpy(dtype=float))),
             "rho_macro_mean": float(np.nanmean(sub["rho_macro"].to_numpy(dtype=float))),
             "rho_macro_weighted": weighted_mean(sub["rho_macro"], weights),
             "rho_micro_matched_joint": weighted_mean(sub["rho_micro_matched_joint"], weights),
+            "rho_micro_matched_joint_simple": float(np.nanmean(sub["rho_micro_matched_joint"].to_numpy(dtype=float))),
             "rho_micro_matched_loo": weighted_mean(sub["rho_micro_matched_loo"], weights),
+            "rho_micro_matched_loo_simple": float(np.nanmean(sub["rho_micro_matched_loo"].to_numpy(dtype=float))),
             "arc_weight_agg": cfg.arc_weight_agg,
         })
     return pd.DataFrame(rows)
