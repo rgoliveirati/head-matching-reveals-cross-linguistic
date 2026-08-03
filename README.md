@@ -31,10 +31,11 @@ These values are computed on the `test` split, using monolingual models only, in
 
 Note: the macro-level rho reported in the manuscript is the simple mean over heads (`rho_macro_mean`, e.g. 0.412 for nsubj). The inference CSV reports the weighted variant (`rho_macro_weighted`, e.g. 0.445); the two are not interchangeable.
 
-The final manuscript table is also stored in:
+Bootstrap confidence intervals and matched-LOO inference outputs are stored in:
 
 ```text
 revision_tables/matched_loo_inference_by_relation.csv
+
 ```
 
 ## Languages

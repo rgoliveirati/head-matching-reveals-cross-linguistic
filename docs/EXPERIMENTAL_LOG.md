@@ -310,12 +310,10 @@ requests
 
 Exact package versions are recorded in the Reproducibility Details, Software section below and in requirements-lock.txt.
 
-For archival reproducibility, the repository includes a pinned environment specification:
+For archival reproducibility, the repository includes a pinned environment file (requirements-lock.txt):
 
 ```text
 requirements-lock.txt
-environment.yml
-pyproject.toml with pinned versions
 ```
 
 ---
