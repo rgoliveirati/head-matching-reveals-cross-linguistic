@@ -1,6 +1,6 @@
 # Experimental Log
 
-Project: **Head Matching Reveals Cross-Linguistic Generalization of Syntactic Attention in Monolingual Transformers**
+Project: **How Stable Are Syntactic Attention Patterns across Languages? Evidence from Monolingual Transformers**
 
 This document records the experimental configuration used to reproduce the main results reported in the manuscript. It is intended to accompany the repository and to make explicit which information is recorded, which outputs are available, and which information was not recorded in the current experimental log.
 

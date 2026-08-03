@@ -402,9 +402,9 @@ For causal validation, additional interventions such as head ablation, activatio
 The current repository substantially improves reproducibility of the main result, but some caveats remain:
 
 - UD release v2.17; all treebank files used were verified byte-identical to the official `r2.17` tags (SHA-256 checksums in docs/EXPERIMENTAL_LOG.md).
-- Hugging Face model revisions were not recorded in the current experimental log.
-- Hardware information was not recorded in the current experimental log.
-- Counts of discarded alignment or inference failures were not recorded in the current experimental log.
+- Hugging Face model commit revisions are recorded in docs/EXPERIMENTAL_LOG.md. They were captured at access time; the extraction script did not pin `revision=` at run time, so exact run-time revisions cannot be guaranteed to match.
+- Hardware and pinned software versions are recorded in docs/EXPERIMENTAL_LOG.md (see also requirements-lock.txt).
+- Counts of discarded alignment or inference failures were not recorded and remain a known limitation.
 - Alignment and inference failures are skipped by the extraction script and should ideally be logged in future runs.
 - Some supplementary analyses may depend on auxiliary outputs under `data/outputs/`.
 
