@@ -305,9 +305,11 @@ Micro-level rho is the weighted mean over language pairs (weight = min(n_arcs));
 
 Table 2 is reproduced by:
 
-````bash
+
+```bash
 python src/significance_index_weighted.py --in_csv data/attention_all_splits.csv --output results/significance_weighted.csv
 ```
+
 
 Seed 20260627; `n_perm = n_boot = 10000`; the permutation null shuffles `mean_attention` within each language.
 
