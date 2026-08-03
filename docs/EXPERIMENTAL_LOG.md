@@ -367,7 +367,7 @@ Universal Dependencies release 2.17. All split files (train/dev/test, where avai
 GitHub repositories: UD_Portuguese-Bosque, UD_Galician-TreeGal,
 UD_Spanish-AnCora, UD_French-GSD, UD_Italian-ISDT, UD_Romanian-RRT,
 UD_German-GSD. (Portuguese-Bosque files unchanged since r2.12;
-Galician-TreeGal since r2.16.) Per-file sentence counts: treebank_counts.txt.
+Galician-TreeGal since r2.16.).
 
 ## Aggregation and canonical data provenance
 

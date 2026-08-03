@@ -121,8 +121,7 @@ head-matching-reveals-cross-linguistic/
 ├── results/
 ├── revision_tables/
 │   ├── matched_loo_inference_by_relation.csv
-│   ├── distance_matching/
-│   └── controls_regen/
+│   └── distance_matching/
 ├── scripts/
 │   ├── reproduce_head_matching.sh
 │   └── reproduce_controls.sh
