@@ -310,7 +310,7 @@ requests
 
 Exact package versions are recorded in the Reproducibility Details, Software section below and in requirements-lock.txt.
 
-For future archival reproducibility, the repository should include one of:
+For archival reproducibility, the repository includes a pinned environment specification:
 
 ```text
 requirements-lock.txt
@@ -339,15 +339,15 @@ The following limitations should remain explicit in the repository and in the ma
 
 ---
 
-## 16. Recommended repository organization
+## 16. Repository organization
 
-Recommended location for this file:
+Location of this file:
 
 ```text
 docs/EXPERIMENTAL_LOG.md
 ```
 
-Recommended supporting files:
+Supporting files:
 
 ```text
 README.md

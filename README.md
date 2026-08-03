@@ -29,6 +29,8 @@ The main result reproduced by this repository (weighted micro aggregation, min n
 
 These values are computed on the `test` split, using monolingual models only, in the `head_to_dep` attention direction. The leave-one-out (LOO) variant avoids circularity: when evaluating one dependency relation, the head matching is estimated using only the other relations. The joint variant is available in the reproduced outputs and should be interpreted only as an upper bound.
 
+Note: the macro-level rho reported in the manuscript is the simple mean over heads (`rho_macro_mean`, e.g. 0.412 for nsubj). The inference CSV reports the weighted variant (`rho_macro_weighted`, e.g. 0.445); the two are not interchangeable.
+
 The final manuscript table is also stored in:
 
 ```text
@@ -117,10 +119,9 @@ head-matching-reveals-cross-linguistic/
 ├── notebooks/
 ├── results/
 ├── revision_tables/
-│   └── final/
-│       ├── final_revision_evidence_table.csv
-│       ├── final_revision_main_table.tex
-│       └── final_revision_tables.md
+│   ├── matched_loo_inference_by_relation.csv
+│   ├── distance_matching/
+│   └── controls_regen/
 ├── scripts/
 │   ├── reproduce_head_matching.sh
 │   └── reproduce_controls.sh
@@ -293,7 +294,7 @@ The scripts write to the chosen output directory. Key outputs:
 | Manuscript table | Script | Output file |
 |---|---|---|
 | Table 1 (global index/macro) | `compute_generalization_metrics.py` | `generalization_metrics_by_deprel.csv` |
-| Table 2 (significance) | see notebook / significance script | — |
+| Table 2 (significance) | `significance_index_weighted.py` | `significance_weighted.csv` |
 | Table 3 (matched LOO + CIs) | `compute_head_matching_metrics.py` + `bootstrap_matched_loo_inference.py` | `head_matching_metrics_test_head_to_dep_mono.csv`, `matched_loo_inference_by_relation.csv` |
 | Table 5 (negative controls) | `negative_control_shuffle_deprel.py`, `negative_control_independent_head_shuffle.py` | `negative_control_*_summary.csv` |
 | Table 6 (distance) | `compute_ud_arc_distance_summary.py` + distance matching | `distance_matching/inference_distance_*.csv` |
@@ -301,6 +302,14 @@ The scripts write to the chosen output directory. Key outputs:
 | Table 8 (entropy) | `compute_generalization_metrics.py` | `entropy_by_lang.csv` |
 
 Micro-level rho is the weighted mean over language pairs (weight = min(n_arcs)); simple-mean columns (`*_simple`) are emitted as a robustness check.
+
+Table 2 is reproduced by:
+
+````bash
+python src/significance_index_weighted.py --in_csv data/attention_all_splits.csv --output results/significance_weighted.csv
+```
+
+Seed 20260627; `n_perm = n_boot = 10000`; the permutation null shuffles `mean_attention` within each language.
 
 ## Reproducing Index-Based Metrics and Entropy
 
