@@ -60,11 +60,6 @@ Additional models configured for control analyses:
 | Language / condition | Model ID |
 |---|---|
 | Galician alternative model | `fpuentes/bert-galician` |
-| Portuguese large model | `neuralmind/bert-large-portuguese-cased` |
-| multilingual baseline | `bert-base-multilingual-cased` |
-| XLM-R baseline | `xlm-roberta-base` |
-
-Model commit revisions are recorded in the Reproducibility Details section below. Tokenizer revisions follow each model's pinned commit.
 
 ---
 
@@ -287,17 +282,16 @@ The manuscript reports or discusses the following controls:
 | `head_to_dep` vs. `dep_to_head` | available from the aggregated CSV and scripts by changing `--direction` |
 | Train/test stability | available from the aggregated CSV and scripts by changing `--split` |
 | Monolingual vs. mBERT | available in `data/attention_all_splits.csv` when `model_family=mbert` is present |
-| Two Galician BERT models | auxiliary CSVs/notebooks available in the repository; should be consolidated into a script |
-| Portuguese base vs. Portuguese large | auxiliary CSVs/notebooks available in the repository; should be consolidated into a script |
-| With/without Portuguese--Galician | available from pairwise CSVs; should be consolidated into a script |
+| Two Galician BERT models | reproduced by `compute_control_analyses.py` (`galician_two_models_control.csv`) |
+| With/without Portuguese--Galician | reproduced by `compute_control_analyses.py` (`without_pt_gl_pair.csv`) |
 
-A dedicated script such as `src/compute_control_analyses.py` is recommended for future versions of the repository, so that all controls can be reproduced without relying on notebooks.
+All controls above are reproduced by `src/compute_control_analyses.py`, which reads the aggregated attention CSV and writes one output file per control, without relying on notebooks.
 
 ---
 
 ## 13. Software environment
 
-The repository contains a `requirements.txt`, but package versions were **not fixed in the current experimental log**.
+The repository contains a `requirements.txt`.
 
 The following packages are required by the pipeline:
 

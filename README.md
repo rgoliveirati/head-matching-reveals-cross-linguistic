@@ -90,7 +90,7 @@ The project uses Universal Dependencies treebanks.
 | Romanian | `UD_Romanian-RRT` |
 | German | `UD_German-GSD` |
 
-The extraction script can download treebanks from the Universal Dependencies GitHub repositories. Exact UD release versions or commit hashes were not recorded in the current experimental log.
+The extraction script can download treebanks from the Universal Dependencies GitHub repositories. The specific files used in this study were verified byte-identical to the official `r2.17` release tags, with SHA-256 checksums recorded in docs/EXPERIMENTAL_LOG.md.
 
 ## Repository Structure
 

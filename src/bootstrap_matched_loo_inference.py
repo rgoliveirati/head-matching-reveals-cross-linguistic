@@ -148,7 +148,7 @@ def main() -> None:
             "deprel": rel,
             "n_language_pairs": n,
             "rho_micro_index": rho_idx,
-            "rho_macro": rho_macro,
+            "rho_macro_weighted": rho_macro,
             "rho_micro_matched_loo": rho_loo,
             "rho_micro_matched_loo_ci_low": loo_lo,
             "rho_micro_matched_loo_ci_high": loo_hi,
