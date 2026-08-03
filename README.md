@@ -1,6 +1,6 @@
-# Head Matching Reveals Cross-Linguistic Generalization of Syntactic Attention in Monolingual Transformers
+# How Stable Are Syntactic Attention Patterns across Languages? Evidence from Monolingual Transformers
 
-This repository contains the code, aggregated attention profiles, derived tables, control outputs, and reproducibility documentation for the study **“Head Matching Reveals Cross-Linguistic Generalization of Syntactic Attention in Monolingual Transformers.”**
+This repository contains the code, aggregated attention profiles, derived tables, control outputs, and reproducibility documentation for the study **“How Stable Are Syntactic Attention Patterns across Languages? Evidence from Monolingual Transformers.”**
 
 The project investigates whether attention patterns associated with syntactic dependencies remain comparable across independently trained monolingual Transformer models. Its central methodological contribution is a **permutation-aware head-matching protocol**: instead of comparing attention heads by their absolute index across independently trained models, heads are aligned by functional signatures within each layer using the Hungarian algorithm.
 
@@ -18,14 +18,14 @@ The main result is that index-based comparison underestimates head-level syntact
 
 ## Main Finding
 
-The main result reproduced by this repository corresponds to the final evidence table used in the manuscript.
+The main result reproduced by this repository (weighted micro aggregation, min n_arcs) is:
 
 | Relation | Index-based micro | Macro layer | Matched micro, LOO [95% CI] | Improvement Δ [95% CI] | p | Matched LOO w/o PT–GL |
 |---|---:|---:|---:|---:|---:|---:|
-| `nsubj` | 0.172 | 0.412 | 0.500 [0.458, 0.554] | 0.328 [0.277, 0.377] | < .001 | 0.479 |
-| `obj`   | 0.128 | 0.352 | 0.571 [0.516, 0.627] | 0.443 [0.371, 0.506] | < .001 | 0.558 |
-| `case`  | 0.067 | 0.158 | 0.321 [0.258, 0.397] | 0.254 [0.198, 0.311] | < .001 | 0.293 |
-| `amod`  | 0.090 | 0.291 | 0.491 [0.424, 0.557] | 0.401 [0.319, 0.478] | < .001 | 0.472 |
+| `nsubj` | 0.166 | 0.412 | 0.492 [0.456, 0.538] | 0.326 [0.277, 0.374] | < .001 | 0.476 |
+| `obj`   | 0.136 | 0.352 | 0.579 [0.512, 0.643] | 0.443 [0.362, 0.509] | < .001 | 0.565 |
+| `case`  | 0.057 | 0.158 | 0.323 [0.258, 0.394] | 0.266 [0.202, 0.328] | < .001 | 0.299 |
+| `amod`  | 0.090 | 0.291 | 0.485 [0.416, 0.552] | 0.395 [0.312, 0.471] | < .001 | 0.468 |
 
 These values are computed on the `test` split, using monolingual models only, in the `head_to_dep` attention direction. The leave-one-out (LOO) variant avoids circularity: when evaluating one dependency relation, the head matching is estimated using only the other relations. The joint variant is available in the reproduced outputs and should be interpreted only as an upper bound.
 
@@ -286,6 +286,22 @@ results/pairwise_head_matching_test_head_to_dep_mono.csv
 results/head_matching_permutations_test_head_to_dep_mono.csv
 ```
 
+### Output-to-table mapping
+
+The scripts write to the chosen output directory. Key outputs:
+
+| Manuscript table | Script | Output file |
+|---|---|---|
+| Table 1 (global index/macro) | `compute_generalization_metrics.py` | `generalization_metrics_by_deprel.csv` |
+| Table 2 (significance) | see notebook / significance script | — |
+| Table 3 (matched LOO + CIs) | `compute_head_matching_metrics.py` + `bootstrap_matched_loo_inference.py` | `head_matching_metrics_test_head_to_dep_mono.csv`, `matched_loo_inference_by_relation.csv` |
+| Table 5 (negative controls) | `negative_control_shuffle_deprel.py`, `negative_control_independent_head_shuffle.py` | `negative_control_*_summary.csv` |
+| Table 6 (distance) | `compute_ud_arc_distance_summary.py` + distance matching | `distance_matching/inference_distance_*.csv` |
+| Table 7 (controls) | `compute_control_analyses.py` | `controls/*.csv` |
+| Table 8 (entropy) | `compute_generalization_metrics.py` | `entropy_by_lang.csv` |
+
+Micro-level rho is the weighted mean over language pairs (weight = min(n_arcs)); simple-mean columns (`*_simple`) are emitted as a robustness check.
+
 ## Reproducing Index-Based Metrics and Entropy
 
 Run:
@@ -430,7 +446,7 @@ If you use this repository, please cite the corresponding paper:
 
 ```bibtex
 @article{OliveiraClaro2026HeadMatching,
-  title  = {Head Matching Reveals Cross-Linguistic Generalization of Syntactic Attention in Monolingual Transformers},
+  title  = {How Stable Are Syntactic Attention Patterns across Languages? Evidence from Monolingual Transformers},
   author = {Oliveira, Ricardo Gomes de and Claro, Daniela Barreiro},
   year   = {2026},
   note   = {Manuscript under review}
